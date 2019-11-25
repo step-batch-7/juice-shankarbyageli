@@ -60,6 +60,14 @@ const readTransactions = function(filename) {
   return transactions;
 };
 
+const getValue = function(table,key) {
+  let e = find(table,key);
+  if(e) {
+    return e[1];
+  }
+};
+
+exports.getValue = getValue;
 exports.readTransactions = readTransactions;
 exports.insertTransaction = insertTransaction;
 exports.getTransactionObj = getTransactionObj;
