@@ -22,7 +22,7 @@ const performTransaction = function(userInput) {
 
 const performSaveTransaction = function(currentRecords, userInput) {
   let transactionDetails = getSaveDetails(userInput);
-  let transactionObj = getTransactionObj(transactionDetails);
+  let transactionObj = getTransactionObj(transactionDetails, new Date());
   currentRecords = insertTransaction(transactionDetails.empid, transactionObj, currentRecords);
   printSavedTransaction(transactionDetails.empid, transactionObj);
   return currentRecords;
@@ -36,9 +36,7 @@ const performQueryTransaction = function(userInput) {
     let queryResult = getEmpBeverageDetails(empid, beverageDetails);
     let beverageCount = getEmpBeverageCount(beverageDetails);
     printQueryResult(queryResult, beverageCount);
-    return 0;
   }
-  return 0;
 };
 
 exports.performTransaction = performTransaction;

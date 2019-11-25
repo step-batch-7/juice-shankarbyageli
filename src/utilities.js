@@ -33,11 +33,11 @@ const getSaveDetails = function(userInput) {
   }
 };
 
-const getTransactionObj = function(transaction) {
+const getTransactionObj = function(transaction, date) {
   let transactionObj = {
     beverage : transaction.beverage,
     quantity : transaction.quantity,
-    date : new Date()
+    date : date
   }
   return transactionObj;
 };

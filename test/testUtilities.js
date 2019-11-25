@@ -11,7 +11,7 @@ describe("insertTransaction", function() {
     let newTransaction = {
       beverage : "watermelon",
       quantity : 1,
-      date : new Date()
+      date : 10
     };
     let expected = {
       12345 : {
@@ -19,7 +19,7 @@ describe("insertTransaction", function() {
           {
             beverage : "watermelon",
             quantity : 1,
-            date : new Date()
+            date : 10
           }
         ]
       }
@@ -34,7 +34,7 @@ describe("insertTransaction", function() {
           {
             beverage : "Orange",
             quantity : 1,
-            date : new Date()
+            date : '9-9-19'
           }
         ]
       }
@@ -42,7 +42,7 @@ describe("insertTransaction", function() {
     let newTransaction = {
       beverage : "watermelon",
       quantity : 1,
-      date : new Date()
+      date : '9-9-19'
     };
     let expected = {
       12345 : {
@@ -50,12 +50,12 @@ describe("insertTransaction", function() {
           {
             beverage : "Orange",
             quantity : 1,
-            date : new Date()
+            date : '9-9-19'
           },
           {
             beverage : "watermelon",
             quantity : 1,
-            date : new Date()
+            date : '9-9-19'
           }
         ]
       }
@@ -78,11 +78,11 @@ describe("getSaveDetails", function() {
 
 describe("getTransactionObj", function() {
   it("should get details of given transaction as object", function() {
-    let actual = getTransactionObj({empid:12345, beverage:"Papaya", quantity:1});
+    let actual = getTransactionObj({empid:12345, beverage:"Papaya", quantity:1}, '1-1-19');
     let expected = {
       beverage : "Papaya",
       quantity : 1,
-      date : new Date()
+      date : '1-1-19'
     }
     assert.deepStrictEqual(actual, expected);
   });
@@ -97,21 +97,22 @@ describe("getEmpBeverageDetails", function() {
 
   it("should give beverage details given empid", function() {
     let transactions = [
-          {
-            beverage : "Orange",
-            quantity : 1,
-            date : new Date()
-          },
-          {
-            beverage : "watermelon",
-            quantity : 1,
-            date : new Date()
-          }
+      {
+        beverage : "Orange",
+        quantity : 1,
+        date : '5-5-19'
+      },
+      {
+        beverage : "watermelon",
+        quantity : 1,
+        date : '6-11-19'
+      }
     ];
+
     let actual = getEmpBeverageDetails(12345, transactions);
     let expected = [
-      [12345, "Orange", 1, new Date()],
-      [12345, "watermelon", 1, new Date()]
+      [12345, "Orange", 1, '5-5-19'],
+      [12345, "watermelon", 1, '6-11-19']
     ];
     assert.deepStrictEqual(actual, expected);
   });
@@ -127,12 +128,12 @@ describe("getEmpBeverageCount", function() {
       {
         beverage : "Orange",
         quantity : 1,
-        date : new Date()
+        date : '1-1-19'
       },
       {
         beverage : "watermelon",
         quantity : 1,
-        date : new Date()
+        date : '1-1-19'
       }
     ];
     let actual = getEmpBeverageCount(transactions);
