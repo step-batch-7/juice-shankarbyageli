@@ -1,6 +1,5 @@
 const assert = require('assert');
 const insertTransaction = require("../src/utilities").insertTransaction;
-const getSaveDetails = require("../src/utilities").getSaveDetails;
 const getTransactionObj = require('../src/utilities').getTransactionObj;
 const getEmpBeverageCount = require('../src/utilities').getEmpBeverageCount;
 const getEmpBeverageDetails = require('../src/utilities').getEmpBeverageDetails;
@@ -64,25 +63,14 @@ describe("insertTransaction", function() {
   });
 });
 
-describe("getSaveDetails", function() {
-  it("should give details object from user input for save transaction", function() {
-    let actual = getSaveDetails(["--save","--beverage","Orange","--empid","12345","--qty","2"]);
-    let expected = {
-      empid : "12345",
-      beverage : "Orange",
-      quantity : "2"
-    };
-    assert.deepStrictEqual(actual, expected);
-  });
-});
-
 describe("getTransactionObj", function() {
   it("should get details of given transaction as object", function() {
-    let actual = getTransactionObj({empid:12345, beverage:"Papaya", quantity:1}, '1-1-19');
+    let date = new Date();
+    let actual = getTransactionObj({ '--empid': '25340', '--beverage': 'mango', '--qty': '2' }, date);
     let expected = {
-      beverage : "Papaya",
-      quantity : 1,
-      date : '1-1-19'
+      beverage : "mango",
+      quantity : '2',
+      date : date
     }
     assert.deepStrictEqual(actual, expected);
   });

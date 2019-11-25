@@ -1,7 +1,8 @@
 const fs = require('fs');
+const parseDetails = require('./inputValidation').parseDetails;
 
 const printQueryResult = function(queryResult, beverageCount) {
-  console.log("Employee ID, Beverage, Quantity, Date")
+  console.log("Employee ID, Beverage, Quantity, Date");
   console.log(queryResult.join('\n'), '\ntotal : ' + beverageCount + ' juices');
 };
 
@@ -25,18 +26,10 @@ const getEmpBeverageCount = function(beverageDetails) {
   return beverageCount;
 };
 
-const getSaveDetails = function(userInput) {
-  return {
-    empid : userInput[4],
-    beverage : userInput[2],
-    quantity : userInput[6],
-  }
-};
-
 const getTransactionObj = function(transaction, date) {
   let transactionObj = {
-    beverage : transaction.beverage,
-    quantity : transaction.quantity,
+    beverage : transaction["--beverage"],
+    quantity : transaction["--qty"],
     date : date
   }
   return transactionObj;
@@ -60,18 +53,9 @@ const readTransactions = function(filename) {
   return transactions;
 };
 
-const getValue = function(table,key) {
-  let e = find(table,key);
-  if(e) {
-    return e[1];
-  }
-};
-
-exports.getValue = getValue;
 exports.readTransactions = readTransactions;
 exports.insertTransaction = insertTransaction;
 exports.getTransactionObj = getTransactionObj;
-exports.getSaveDetails = getSaveDetails;
 exports.getEmpBeverageCount = getEmpBeverageCount;
 exports.getEmpBeverageDetails = getEmpBeverageDetails;
 exports.printQueryResult = printQueryResult;
