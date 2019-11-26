@@ -1,42 +1,44 @@
 const fs = require('fs');
 const readTransactions = require('./utilities').readTransactions;
+const writeIntoTransactions = require('./utilities').writeIntoTransactions;
 const getTransactionObj = require('./utilities').getTransactionObj;
 const insertTransaction = require('./utilities').insertTransaction;
 const getEmpBeverageDetails = require('./utilities').getEmpBeverageDetails;
 const getEmpBeverageCount = require('./utilities').getEmpBeverageCount;
-const printSavedTransaction = require('./utilities').printSavedTransaction;
-const printQueryResult = require('./utilities').printQueryResult;
+const getSavedPrintFormat = require('./utilities').getSavedPrintFormat;
+const getQueryResultFormat = require('./utilities').getQueryResultFormat;
 
-const performTransaction = function(userInput, transaction) {
-  let option = userInput[0];
-  let currentRecords = readTransactions('./transactions.json');
+const performTransaction = function(option, transaction, date) {
+  let currentRecords = readTransactions('./transactions.json', fs.existsSync ,fs.readFileSync);
+  let result = [];
   if(option == "--save") {
-    transaction = performSaveTransaction(currentRecords, transaction);
-    transaction = JSON.stringify(transaction);
-    fs.writeFileSync('./transactions.json',transaction,'utf8');
+    result = performSaveTransaction(currentRecords, transaction, date);
   } else {
-    transaction = performQueryTransaction(transaction);
+    result = performQueryTransaction(currentRecords, transaction);
   }
+  return result;
 };
 
-const performSaveTransaction = function(currentRecords, transactionDetails) {
-  let transactionObj = getTransactionObj(transactionDetails, new Date());
-  currentRecords = insertTransaction(transactionDetails["--empid"], transactionObj, currentRecords);
-  printSavedTransaction(transactionDetails['--empid'], transactionObj);
-  return currentRecords;
+const performSaveTransaction = function(currentRecords, transactionDetails, date) {
+  let empid = transactionDetails['--empid'];
+  let transactionObj = getTransactionObj(transactionDetails, date);
+  currentRecords = insertTransaction(empid, transactionObj, currentRecords);
+  writeIntoTransactions(currentRecords);
+  return getSavedPrintFormat(empid, transactionObj);
 };
 
-const performQueryTransaction = function(transaction) {
+const performQueryTransaction = function(currentRecords, transaction) {
+  let result = ["No beverage details for this empid"];
   let empid = transaction['--empid'];
-  let currentRecords = readTransactions('./transactions.json');
-  if(Object.keys(currentRecords).includes(empid)) {
+  if(Object.keys(currentRecords).includes(String(empid))) {
     let beverageDetails = currentRecords[empid]["beverages"];
     let queryResult = getEmpBeverageDetails(empid, beverageDetails);
     let beverageCount = getEmpBeverageCount(beverageDetails);
-    printQueryResult(queryResult, beverageCount);
-    return 0;
+    result = getQueryResultFormat(queryResult, beverageCount);
   }
-  console.log("Details for this empid don't exist");
+  return result;
 };
 
 exports.performTransaction = performTransaction;
+exports.performSaveTransaction = performSaveTransaction;
+exports.performQueryTransaction = performQueryTransaction;

@@ -4,11 +4,11 @@ const isValidInput = require('./src/inputValidation.js').isValidInput;
 const main = function() {
   let userInput = process.argv.slice(2);
   let validArgs = isValidInput(userInput);
+  let result = ["Invalid Option !"];
   if(validArgs.isValid) {
-    performTransaction(userInput, validArgs.transactionDetails);
-    return 0;
+    result = performTransaction(userInput[0], validArgs.transactionDetails, new Date().toJSON());
   }
-  console.log("Invalid Option !")
+  console.log(result.join('\n'));
 };
 
 main();

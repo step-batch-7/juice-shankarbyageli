@@ -1,15 +1,18 @@
 const fs = require('fs');
 const parseDetails = require('./inputValidation').parseDetails;
 
-const printQueryResult = function(queryResult, beverageCount) {
-  console.log("Employee ID, Beverage, Quantity, Date");
-  console.log(queryResult.join('\n'), '\ntotal : ' + beverageCount + ' juices');
+const getQueryResultFormat = function(queryResult, beverageCount) {
+  let heading = "Employee ID, Beverage, Quantity, Date";
+  let result = `${queryResult.join('\n')}` 
+  let total = `total : ${beverageCount} juices`;
+  return [heading, result, total];
 };
 
-const printSavedTransaction = function(empid, transaction) {
-  console.log("Transaction Recorded:");
-  console.log("Employee ID, Beverage, Quantity, Date");
-  console.log(empid+','+transaction.beverage+','+transaction.quantity+',',transaction.date);
+const getSavedPrintFormat = function(empid, transaction) {
+  let recorded = "Transaction Recorded:";
+  let heading = "Employee ID, Beverage, Quantity, Date";
+  let detail = `${empid},${transaction.beverage},${transaction.quantity},${transaction.date}`;
+  return [recorded, heading, detail];
 }
 
 const getEmpBeverageDetails = function(empid, beverageDetails) {
@@ -35,6 +38,11 @@ const getTransactionObj = function(transaction, date) {
   return transactionObj;
 };
 
+const writeIntoTransactions = function(records) {
+  let transaction = JSON.stringify(records);
+  fs.writeFileSync('./transactions.json', transaction, 'utf8');
+}
+
 const insertTransaction = function(empid, transactionObj, records) {
   if(!Object.keys(records).includes(String(empid))) {
     records[empid] = {};
@@ -44,13 +52,12 @@ const insertTransaction = function(empid, transactionObj, records) {
   return records;
 };
 
-const readTransactions = function(filename) {
-  if(!fs.existsSync(filename,'utf8')) {
-    fs.writeFileSync(filename,'{}','utf8');
+const readTransactions = function(filepath, fileExists, readFile) {
+  if(!fileExists(filepath)) {
+    return JSON.parse('{}');
   }
-  let transactions = fs.readFileSync(filename,'utf8');
-  transactions = JSON.parse(transactions);
-  return transactions;
+  let transactions = readFile(filepath,'utf8');
+  return JSON.parse(transactions);
 };
 
 exports.readTransactions = readTransactions;
@@ -58,5 +65,6 @@ exports.insertTransaction = insertTransaction;
 exports.getTransactionObj = getTransactionObj;
 exports.getEmpBeverageCount = getEmpBeverageCount;
 exports.getEmpBeverageDetails = getEmpBeverageDetails;
-exports.printQueryResult = printQueryResult;
-exports.printSavedTransaction = printSavedTransaction;
+exports.getQueryResultFormat = getQueryResultFormat;
+exports.getSavedPrintFormat = getSavedPrintFormat;
+exports.writeIntoTransactions = writeIntoTransactions;

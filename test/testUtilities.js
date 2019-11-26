@@ -3,6 +3,7 @@ const insertTransaction = require("../src/utilities").insertTransaction;
 const getTransactionObj = require('../src/utilities').getTransactionObj;
 const getEmpBeverageCount = require('../src/utilities').getEmpBeverageCount;
 const getEmpBeverageDetails = require('../src/utilities').getEmpBeverageDetails;
+const readTransactions = require('../src/utilities').readTransactions;
 
 describe("insertTransaction", function() {
   it("should add new Transaction to the non-existing empid", function() {
@@ -126,5 +127,35 @@ describe("getEmpBeverageCount", function() {
     ];
     let actual = getEmpBeverageCount(transactions);
     assert.strictEqual(actual, 2);
+  });
+});
+
+describe("readTransactions", function() {
+  it("should read file and return contents if present", function() {
+    const fileExists = function(filepath) {
+      assert.strictEqual(filepath, "filepath");
+      return true;
+    }
+    const readFile = function(path) {
+      assert.strictEqual(path, "filepath");
+      return '{"key" : "value"}';
+    }
+    let actual = readTransactions('filepath', fileExists, readFile);
+    let expected = {key : "value"};
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("should return empty object for non-existing file", function() {
+    const fileExists = function(filepath) {
+      assert.strictEqual(filepath, "filepath");
+      return false;
+    }
+    const readFile = function(path) {
+      assert.strictEqual(path, "filepath");
+      return '{}';
+    }
+    let actual = readTransactions('filepath', fileExists, readFile);
+    let expected = {};
+    assert.deepStrictEqual(actual, expected);
   });
 });
