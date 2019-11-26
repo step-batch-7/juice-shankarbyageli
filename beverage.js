@@ -1,15 +1,16 @@
 const performTransaction = require('./src/performTransaction.js').performTransaction;
-const isValidInput = require('./src/inputValidation.js').isValidInput;
+const validateInput = require('./src/inputValidation.js').validateInput;
 
 const main = function() {
   let userInput = process.argv.slice(2);
-  let result = ["Invalid Option !"];
-  let validArgs = isValidInput(userInput);
-  if(validArgs.isValid) {
-    let transactionDetails = validArgs.transactionDetails;
-    result = performTransaction(userInput[0], transactionDetails, new Date().toJSON());
+  let option = userInput[0];
+  let transactionResult = ["Invalid Option !"];
+  let transaction = validateInput(userInput);
+  if(transaction.isValid) {
+    let details = transaction.details;
+    transactionResult = performTransaction(option, details, new Date().toJSON());
   }
-  console.log(result.join('\n'));
+  console.log(transactionResult.join('\n'));
 };
 
 main();

@@ -30,19 +30,32 @@ const performQueryTransaction = function(currentRecords, transaction) {
   let selectedEmpRecords = [];
   let empId = transaction['--empid'];
   let date = transaction['--date'];
-  for(employeeId in currentRecords) {
-    let empid = empId || employeeId;
-    currentRecords[employeeId]["beverages"].foremployeeId(function(record) {
-      record.empid = employeeId;
-    })
-    if(employeeId == empid) {
-      selectedEmpRecords = selectedEmpRecords.concat(currentRecords[employeeId]["beverages"]);
-    }
-  }
+  selectedEmpRecords = getDetailsOfGivenID(currentRecords, empId);
   let selectedRecords = getFilteredRecords(selectedEmpRecords, date);
   let {beverageDetails, beverageCount} = getBeverageDetails(selectedRecords);
   return getQueryResultFormat(beverageDetails, beverageCount);
 };
+
+const getDetailsOfGivenID = function(records, empId) {
+  let selectedEmpRecords = [];
+  for(employeeId in records) {
+    let empid = empId || employeeId;
+    records = addEmpIdToDetails(records, empid);
+    if(employeeId == empid) {
+      selectedEmpRecords = selectedEmpRecords.concat(records[employeeId]["beverages"]);
+    }
+  }
+  return selectedEmpRecords;
+};
+
+const addEmpIdToDetails = function(records, empid) {
+  if(Object.keys(records).includes(String(empid))) {
+    records[empid]["beverages"].forEach(function(record) {
+      record.empid = empid;
+    })
+  }
+  return records;
+}
 
 const getFilteredRecords = function(selectedEmpRecords, date) {
   let selected = selectedEmpRecords.filter(function(subrecord) {
@@ -57,3 +70,5 @@ exports.performTransaction = performTransaction;
 exports.performSaveTransaction = performSaveTransaction;
 exports.performQueryTransaction = performQueryTransaction;
 exports.getFilteredRecords = getFilteredRecords;
+exports.getDetailsOfGivenID = getDetailsOfGivenID;
+exports.addEmpIdToDetails = addEmpIdToDetails;

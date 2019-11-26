@@ -1,10 +1,10 @@
-const isValidInput = function(userInput) {
-  let getValidInput = {};
+const validateInput = function(userInput) {
+  let transaction = {};
   let groupedArgs = getGroupedArguments(userInput.slice(1));
-  getValidInput.isValid = (groupedArgs != 0);
-  getValidInput.isValid = ["--save","--query"].includes(userInput[0]);
-  getValidInput.transactionDetails = groupedArgs.reduce(parseDetails, {});
-  return getValidInput;
+  transaction.isValid = (groupedArgs != 0);
+  transaction.isValid = ["--save","--query"].includes(userInput[0]);
+  transaction.details = groupedArgs.reduce(parseDetails, {});
+  return transaction;
 };
 
 const parseDetails = function(details, argument) {
@@ -58,7 +58,7 @@ const getGroupedArguments = function(cmdArgs) {
   return [];
 };
 
-exports.isValidInput = isValidInput;
+exports.validateInput = validateInput;
 exports.getGroupedArguments = getGroupedArguments;
 exports.isValidArgs = isValidArgs;
 exports.isValidEmpid = isValidEmpid;

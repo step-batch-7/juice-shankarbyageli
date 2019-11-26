@@ -1,4 +1,4 @@
-const isValidInput = require('../src/inputValidation').isValidInput;
+const validateInput = require('../src/inputValidation').validateInput;
 const getGroupedArguments = require('../src/inputValidation').getGroupedArguments;
 const isValidArgs = require('../src/inputValidation').isValidArgs;
 const isValidEmpid = require('../src/inputValidation').isValidEmpid;
@@ -19,17 +19,17 @@ describe("testIsValidArgs", function() {
 describe("validateInput", function() {
   it("should validate and return arguments object", function() {
     let input = ['--save','--beverage','orange','--empid','1234','--qty','2'];
-    let actual = isValidInput(input);
-    let expected = {isValid : true, transactionDetails : {'--beverage':'orange','--empid':'1234','--qty':'2'}}
+    let actual = validateInput(input);
+    let expected = {isValid : true, details : {'--beverage':'orange','--empid':'1234','--qty':'2'}}
     assert.deepStrictEqual(actual, expected);
   });
 
   it("should validate invalid input", function() {
     let input = ['--check','--date','2019-12-12'];
-    let actual = isValidInput(input);
+    let actual = validateInput(input);
     let expected = {
       isValid: false,
-      transactionDetails: {
+      details: {
         '--date': '2019-12-12'
       }
     }
