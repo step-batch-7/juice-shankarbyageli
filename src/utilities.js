@@ -1,11 +1,10 @@
 const fs = require('fs');
-const parseDetails = require('./inputValidation').parseDetails;
 
-const getQueryResultFormat = function(queryResult, beverageCount) {
+const getQueryResultFormat = function(details, beverageCount) {
   let heading = "Employee ID, Beverage, Quantity, Date";
-  let result = `${queryResult.join('\n')}` 
+  details = details.join('\n');
   let total = `total : ${beverageCount} juices`;
-  return [heading, result, total];
+  return [heading, details, total];
 };
 
 const getSavedPrintFormat = function(empid, transaction) {
@@ -13,20 +12,16 @@ const getSavedPrintFormat = function(empid, transaction) {
   let heading = "Employee ID, Beverage, Quantity, Date";
   let detail = `${empid},${transaction.beverage},${transaction.quantity},${transaction.date}`;
   return [recorded, heading, detail];
-}
-
-const getEmpBeverageDetails = function(empid, beverageDetails) {
-  let queryResult = beverageDetails.map(function(detail) {
-    return [empid, detail.beverage, detail.quantity, detail.date];
-  }, []);
-  return queryResult;
 };
 
-const getEmpBeverageCount = function(beverageDetails) {
-  let beverageCount = beverageDetails.reduce(function(totalBeverages, detail) {
-    return totalBeverages += Number(detail.quantity);
+const getBeverageDetails = function(queryResult) {
+  let beverageDetails = queryResult.map(function(row) {
+    return [row.empid, row.beverage, row.quantity, row.date];
+  });
+  let beverageCount = queryResult.reduce(function(total, row) {
+    return total + (+row.quantity);
   }, 0);
-  return beverageCount;
+  return {beverageDetails, beverageCount};
 };
 
 const getTransactionObj = function(transaction, date) {
@@ -63,8 +58,7 @@ const readTransactions = function(filepath, fileExists, readFile) {
 exports.readTransactions = readTransactions;
 exports.insertTransaction = insertTransaction;
 exports.getTransactionObj = getTransactionObj;
-exports.getEmpBeverageCount = getEmpBeverageCount;
-exports.getEmpBeverageDetails = getEmpBeverageDetails;
+exports.getBeverageDetails = getBeverageDetails;
 exports.getQueryResultFormat = getQueryResultFormat;
 exports.getSavedPrintFormat = getSavedPrintFormat;
 exports.writeIntoTransactions = writeIntoTransactions;

@@ -1,17 +1,9 @@
 const isValidInput = function(userInput) {
   let getValidInput = {};
-  if(isValidOptionAndCount(userInput)) {
-    let options = {
-      '--save' : ['--beverage','--empid','--qty'],
-      '--query' : ['--empid']
-    };
-    let groupedArgs = getGroupedArguments(userInput.slice(1));
-    getValidInput.transactionDetails = groupedArgs.reduce(parseDetails, {});
-    getValidInput.isValid = options[userInput[0]].every(function(option) {
-      return Object.keys(getValidInput.transactionDetails).includes(option);
-    });
-    return getValidInput;
-  }
+  let groupedArgs = getGroupedArguments(userInput.slice(1));
+  getValidInput.isValid = (groupedArgs != 0);
+  getValidInput.isValid = ["--save","--query"].includes(userInput[0]);
+  getValidInput.transactionDetails = groupedArgs.reduce(parseDetails, {});
   return getValidInput;
 };
 
@@ -19,16 +11,6 @@ const parseDetails = function(details, argument) {
   let option = argument[0];
   details[option] = argument[1];
   return details;
-};
-
-const isValidOptionAndCount = function(inputArgs) {
-  let option = inputArgs[0];
-  let noOfArgs = inputArgs.length;
-  let argsCount = {
-    '--save' : 7,
-    '--query' : 3
-  };
-  return Object.keys(argsCount).includes(option) && noOfArgs == argsCount[option];
 };
 
 const isValidBeverage = function(beverage) {
@@ -45,16 +27,22 @@ const isValidQuantity = function(qty) {
   return quantity > 0;
 };
 
+const isValidDate = function(date) {
+  date = new Date(date);
+  return date != 'Invalid Date';
+};
+
 const isValidArgs = function(cmdArg) {
   let option = cmdArg[0];
   let value = cmdArg[1];
   const options = {
     "--beverage" : isValidBeverage,
     "--empid" : isValidEmpid,
-    "--qty" : isValidQuantity
+    "--qty" : isValidQuantity,
+    "--date" : isValidDate
   };
   
-  if(["--beverage", "--empid", "--qty"].includes(option)) {
+  if(["--beverage", "--empid", "--qty", "--date"].includes(option)) {
     return options[option](value);
   }
 };
@@ -72,8 +60,8 @@ const getGroupedArguments = function(cmdArgs) {
 
 exports.isValidInput = isValidInput;
 exports.getGroupedArguments = getGroupedArguments;
-exports.isValidOptionAndCount = isValidOptionAndCount;
 exports.isValidArgs = isValidArgs;
 exports.isValidEmpid = isValidEmpid;
 exports.isValidQuantity = isValidQuantity;
+exports.isValidDate = isValidDate;
 exports.parseDetails = parseDetails;

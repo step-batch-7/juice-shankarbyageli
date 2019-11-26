@@ -1,8 +1,7 @@
 const assert = require('assert');
 const insertTransaction = require("../src/utilities").insertTransaction;
 const getTransactionObj = require('../src/utilities').getTransactionObj;
-const getEmpBeverageCount = require('../src/utilities').getEmpBeverageCount;
-const getEmpBeverageDetails = require('../src/utilities').getEmpBeverageDetails;
+const getBeverageDetails = require('../src/utilities').getBeverageDetails;
 const readTransactions = require('../src/utilities').readTransactions;
 
 describe("insertTransaction", function() {
@@ -77,56 +76,29 @@ describe("getTransactionObj", function() {
   });
 });
 
-describe("getEmpBeverageDetails", function() {
-  it("should give beverage details of non-existing empid", function() {
-    let actual = getEmpBeverageDetails(12345, []);
-    let expected = [];
-    assert.deepStrictEqual(actual, expected);
-  });
-
-  it("should give beverage details given empid", function() {
+describe("getBeverageDetails", function() {
+  it("should give beverage details and count of given emp details", function() {
+    let date = new Date();
     let transactions = [
       {
         beverage : "Orange",
         quantity : 1,
-        date : '5-5-19'
+        date : date,
+        empid : 1234
       },
       {
         beverage : "watermelon",
         quantity : 1,
-        date : '6-11-19'
+        date : date,
+        empid : 1234
       }
     ];
-
-    let actual = getEmpBeverageDetails(12345, transactions);
-    let expected = [
-      [12345, "Orange", 1, '5-5-19'],
-      [12345, "watermelon", 1, '6-11-19']
-    ];
+    let actual = getBeverageDetails(transactions);
+    let expected = {
+      beverageDetails : [[1234,"Orange",1,date],[1234,"watermelon",1,date]],
+      beverageCount : 2
+    }
     assert.deepStrictEqual(actual, expected);
-  });
-});
-
-describe("getEmpBeverageCount", function() {
-  it("should give beverage count for non-existing beverages", function() {
-    assert.strictEqual(getEmpBeverageCount([]),0)
-  });
-
-  it("should give beverage count of employee id", function() {
-    let transactions = [
-      {
-        beverage : "Orange",
-        quantity : 1,
-        date : '1-1-19'
-      },
-      {
-        beverage : "watermelon",
-        quantity : 1,
-        date : '1-1-19'
-      }
-    ];
-    let actual = getEmpBeverageCount(transactions);
-    assert.strictEqual(actual, 2);
   });
 });
 

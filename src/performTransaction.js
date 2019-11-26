@@ -3,8 +3,7 @@ const readTransactions = require('./utilities').readTransactions;
 const writeIntoTransactions = require('./utilities').writeIntoTransactions;
 const getTransactionObj = require('./utilities').getTransactionObj;
 const insertTransaction = require('./utilities').insertTransaction;
-const getEmpBeverageDetails = require('./utilities').getEmpBeverageDetails;
-const getEmpBeverageCount = require('./utilities').getEmpBeverageCount;
+const getBeverageDetails = require('./utilities').getBeverageDetails;
 const getSavedPrintFormat = require('./utilities').getSavedPrintFormat;
 const getQueryResultFormat = require('./utilities').getQueryResultFormat;
 
@@ -28,17 +27,33 @@ const performSaveTransaction = function(currentRecords, transactionDetails, date
 };
 
 const performQueryTransaction = function(currentRecords, transaction) {
-  let result = ["No beverage details for this empid"];
-  let empid = transaction['--empid'];
-  if(Object.keys(currentRecords).includes(String(empid))) {
-    let beverageDetails = currentRecords[empid]["beverages"];
-    let queryResult = getEmpBeverageDetails(empid, beverageDetails);
-    let beverageCount = getEmpBeverageCount(beverageDetails);
-    result = getQueryResultFormat(queryResult, beverageCount);
+  let selectedEmpRecords = [];
+  let empId = transaction['--empid'];
+  let date = transaction['--date'];
+  for(employeeId in currentRecords) {
+    let empid = empId || employeeId;
+    currentRecords[employeeId]["beverages"].foremployeeId(function(record) {
+      record.empid = employeeId;
+    })
+    if(employeeId == empid) {
+      selectedEmpRecords = selectedEmpRecords.concat(currentRecords[employeeId]["beverages"]);
+    }
   }
-  return result;
+  let selectedRecords = getFilteredRecords(selectedEmpRecords, date);
+  let {beverageDetails, beverageCount} = getBeverageDetails(selectedRecords);
+  return getQueryResultFormat(beverageDetails, beverageCount);
 };
+
+const getFilteredRecords = function(selectedEmpRecords, date) {
+  let selected = selectedEmpRecords.filter(function(subrecord) {
+    let recordDate = date || subrecord.date;
+    date = new Date(recordDate).toLocaleDateString();
+    return (date == new Date(subrecord.date).toLocaleDateString());
+  });  
+  return selected;
+}
 
 exports.performTransaction = performTransaction;
 exports.performSaveTransaction = performSaveTransaction;
 exports.performQueryTransaction = performQueryTransaction;
+exports.getFilteredRecords = getFilteredRecords;

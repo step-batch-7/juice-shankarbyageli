@@ -1,9 +1,9 @@
 const isValidInput = require('../src/inputValidation').isValidInput;
 const getGroupedArguments = require('../src/inputValidation').getGroupedArguments;
 const isValidArgs = require('../src/inputValidation').isValidArgs;
-const isValidOptionAndCount = require('../src/inputValidation').isValidOptionAndCount;
 const isValidEmpid = require('../src/inputValidation').isValidEmpid;
 const isValidQuantity = require('../src/inputValidation').isValidQuantity;
+const isValidDate = require('../src/inputValidation').isValidDate;
 const parseDetails = require('../src/inputValidation').parseDetails;
 const assert = require('assert');
 
@@ -25,9 +25,14 @@ describe("validateInput", function() {
   });
 
   it("should validate invalid input", function() {
-    let input = ['--check','--empid','1234'];
+    let input = ['--check','--date','2019-12-12'];
     let actual = isValidInput(input);
-    let expected = {};
+    let expected = {
+      isValid: false,
+      transactionDetails: {
+        '--date': '2019-12-12'
+      }
+    }
     assert.deepStrictEqual(actual, expected);
   });
 });
@@ -53,18 +58,6 @@ describe("testGetGroupedArgs", function() {
   });
 });
 
-describe("isValidOptionCount", function() {
-  it("should validate option and argument count", function() {
-    let args = ['--save','--beverage','orange','--empid','1234','--qty','2'];
-    let actual = isValidOptionAndCount(args);
-    assert.strictEqual(actual, true);
-
-    args = ['--query','--empid','123','qty','1'];
-    actual = isValidOptionAndCount(args);
-    assert.strictEqual(actual, false);
-  });
-});
-
 describe("parseDetails", function() {
   it("should add new key-value pair to existing obj", function() {
     let argument = ["key","value"];
@@ -87,6 +80,15 @@ describe("isValidEmpid", function() {
     assert.strictEqual(isValidEmpid('-12'), false);
     assert.strictEqual(isValidEmpid('a123'), false);
     assert.strictEqual(isValidEmpid('12345'), true);
+  });
+});
+
+describe("isValidDate", function() {
+  it("should validate date", function() {
+    assert.strictEqual(isValidDate('2012-12-12'), true);
+    assert.strictEqual(isValidDate('2010-14-5'), false);
+    assert.strictEqual(isValidDate('a123'), false);
+    assert.strictEqual(isValidDate('10-10-2012'), true);
   });
 });
 

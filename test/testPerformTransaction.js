@@ -2,6 +2,7 @@ const assert = require('assert');
 const performSaveTransaction = require('../src/performTransaction.js').performSaveTransaction;
 const performQueryTransaction = require('../src/performTransaction').performQueryTransaction;
 const performTransaction = require('../src/performTransaction').performTransaction;
+const getFilteredRecords = require('../src/performTransaction').getFilteredRecords;
 
 describe("performSaveTransaction", function() {
     it("should add new Transaction to the non-existing empid", function() {
@@ -19,6 +20,36 @@ describe("performSaveTransaction", function() {
       ];
       let actual = performSaveTransaction(currentData, newTransaction, date);
       assert.deepStrictEqual(actual, expected);
+  });
+});
+
+describe("getFilteredRecords", function() {
+  it("should filter given records by given filter", function() {
+    let date = new Date().toJSON();
+    let records = [{
+      beverage : "mango",
+      quantity : 1,
+      date : date,
+      empid : 12345
+    },{
+      beverage : "orange",
+      quantity : 1,
+      date : date,
+      empid : 12345
+    }];
+    let actual = getFilteredRecords(records, date);
+    let expected = [{
+      beverage : "mango",
+      quantity : 1,
+      date : date,
+      empid : 12345
+    },{
+      beverage : "orange",
+      quantity : 1,
+      date : date,
+      empid : 12345
+    }];
+    assert.deepStrictEqual(actual, expected);
   });
 });
 
