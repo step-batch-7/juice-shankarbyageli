@@ -1,9 +1,10 @@
-const validateInput = require('../src/inputValidation').validateInput;
+const isValidInput = require('../src/inputValidation').isValidInput;
 const getGroupedArguments = require('../src/inputValidation').getGroupedArguments;
 const isValidArgs = require('../src/inputValidation').isValidArgs;
 const isValidOptionAndCount = require('../src/inputValidation').isValidOptionAndCount;
 const isValidEmpid = require('../src/inputValidation').isValidEmpid;
 const isValidQuantity = require('../src/inputValidation').isValidQuantity;
+const parseDetails = require('../src/inputValidation').parseDetails;
 const assert = require('assert');
 
 describe("testIsValidArgs", function() {
@@ -12,6 +13,22 @@ describe("testIsValidArgs", function() {
     assert.strictEqual(isValidArgs(["--empid","25a"]), false);
     assert.strictEqual(isValidArgs(["--qty","3"]), true);
     assert.strictEqual(isValidArgs(["--empid","1234"]), true);
+  });
+});
+
+describe("validateInput", function() {
+  it("should validate and return arguments object", function() {
+    let input = ['--save','--beverage','orange','--empid','1234','--qty','2'];
+    let actual = isValidInput(input);
+    let expected = {isValid : true, transactionDetails : {'--beverage':'orange','--empid':'1234','--qty':'2'}}
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("should validate invalid input", function() {
+    let input = ['--check','--empid','1234'];
+    let actual = isValidInput(input);
+    let expected = {};
+    assert.deepStrictEqual(actual, expected);
   });
 });
 
@@ -27,6 +44,13 @@ describe("testGetGroupedArgs", function() {
     expected = [['--empid','123']];
     assert.deepEqual(actual, expected);
   });
+
+  it("should not group invalid arguments", function() {
+    let args = ['--emp',1234];
+    let expected = [];
+    let actual = getGroupedArguments(args);
+    assert.deepStrictEqual(actual, expected);
+  });
 });
 
 describe("isValidOptionCount", function() {
@@ -38,6 +62,22 @@ describe("isValidOptionCount", function() {
     args = ['--query','--empid','123','qty','1'];
     actual = isValidOptionAndCount(args);
     assert.strictEqual(actual, false);
+  });
+});
+
+describe("parseDetails", function() {
+  it("should add new key-value pair to existing obj", function() {
+    let argument = ["key","value"];
+    let actual = parseDetails({}, argument);
+    let expected = {key : "value"};
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("should add value to existing key", function() {
+    let argument = ["key","newValue"];
+    let actual = parseDetails({key : "value"}, argument);
+    let expected = {key : "newValue"};
+    assert.deepStrictEqual(actual, expected);
   });
 });
 

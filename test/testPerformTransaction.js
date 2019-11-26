@@ -24,13 +24,14 @@ describe("performSaveTransaction", function() {
 
 describe("performQueryTranasaction", function() {
   it("should return details of given employee in array", function() {
+    let date = new Date().toJSON();
     let currentData = {
       12345 : {
         beverages : [
           {
             beverage : "Orange",
             quantity : 1,
-            date : '9-9-19'
+            date : date
           }
         ]
       }
@@ -41,7 +42,7 @@ describe("performQueryTranasaction", function() {
     let actual = performQueryTransaction(currentData, newTransaction);
     let expected = [
       'Employee ID, Beverage, Quantity, Date',
-      '12345,Orange,1,9-9-19',
+      `12345,Orange,1,${date}`,
       'total : 1 juices'
     ];
     assert.deepStrictEqual(actual, expected);
