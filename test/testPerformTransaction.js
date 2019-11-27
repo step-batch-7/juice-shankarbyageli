@@ -4,7 +4,6 @@ const performQueryTransaction = require("../src/transaction").performQueryTransa
 const performTransaction = require("../src/transaction").performTransaction;
 const getFilteredRecords = require("../src/transaction").getFilteredRecords;
 const getDetailsOfGivenID = require("../src/transaction").getDetailsOfGivenID;
-const addEmpIdToDetails = require("../src/transaction").addEmpIdToDetails;
 
 describe("performSaveTransaction", function() {
   it("should add new Transaction to the non-existing empid", function() {
@@ -70,7 +69,8 @@ describe("performQueryTranasaction", function() {
           {
             beverage: "Orange",
             quantity: 1,
-            date: date
+            date: date,
+            empid : 12345
           }
         ]
       }
@@ -120,7 +120,8 @@ describe("getDetailsOfGivenId", function() {
           {
             beverage: "Orange",
             quantity: 1,
-            date: date
+            date: date,
+            empid : 12345
           }
         ]
       }
@@ -152,44 +153,6 @@ describe("getDetailsOfGivenId", function() {
     };
     let actual = getDetailsOfGivenID(records, 25340);
     let expected = [];
-    assert.deepStrictEqual(actual, expected);
-  });
-});
-
-describe("addEmpIdToDetails", function() {
-  it("should add emp id to beverage details", function() {
-    let date = new Date().toJSON();
-    let records = {
-      12345: {
-        beverages: [
-          {
-            beverage: "Orange",
-            quantity: 1,
-            date: date
-          }
-        ]
-      }
-    };
-    let actual = addEmpIdToDetails(records, 12345);
-    let expected = {
-      12345: {
-        beverages: [
-          {
-            beverage: "Orange",
-            quantity: 1,
-            date: date,
-            empid: 12345
-          }
-        ]
-      }
-    };
-    assert.deepStrictEqual(actual, expected);
-  });
-
-  it("should not modify records if empid doesn't exist", function() {
-    let records = {};
-    let actual = addEmpIdToDetails(records, 12345);
-    let expected = {};
     assert.deepStrictEqual(actual, expected);
   });
 });

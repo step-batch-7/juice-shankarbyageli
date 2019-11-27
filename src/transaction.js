@@ -41,7 +41,6 @@ const getDetailsOfGivenID = function(records, empId) {
   let selectedEmpRecords = [];
   for(employeeId in records) {
     let empid = empId || employeeId;
-    records = addEmpIdToDetails(records, empid);
     if(employeeId == empid) {
       selectedEmpRecords = 
       selectedEmpRecords.concat(records[employeeId]["beverages"]);
@@ -49,15 +48,6 @@ const getDetailsOfGivenID = function(records, empId) {
   }
   return selectedEmpRecords;
 };
-
-const addEmpIdToDetails = function(records, empid) {
-  if(Object.keys(records).includes(String(empid))) {
-    records[empid]["beverages"].forEach(function(record) {
-      record.empid = empid;
-    })
-  }
-  return records;
-}
 
 const getFilteredRecords = function(selectedEmpRecords, date) {
   let selected = selectedEmpRecords.filter(function(subrecord) {
@@ -73,4 +63,3 @@ exports.performSaveTransaction = performSaveTransaction;
 exports.performQueryTransaction = performQueryTransaction;
 exports.getFilteredRecords = getFilteredRecords;
 exports.getDetailsOfGivenID = getDetailsOfGivenID;
-exports.addEmpIdToDetails = addEmpIdToDetails;

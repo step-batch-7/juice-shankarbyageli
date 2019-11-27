@@ -39,6 +39,7 @@ const writeIntoTransactions = function(records) {
 }
 
 const insertTransaction = function(empid, transactionObj, records) {
+  transactionObj.empid = empid;
   if(!Object.keys(records).includes(String(empid))) {
     records[empid] = {};
     records[empid]["beverages"] = [];

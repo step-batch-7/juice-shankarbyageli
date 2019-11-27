@@ -6,11 +6,12 @@ const readTransactions = require('../src/utilities').readTransactions;
 
 describe("insertTransaction", function() {
   it("should add new Transaction to the non-existing empid", function() {
+    let date = new Date().toJSON();
     let currentData = {};
     let newTransaction = {
       beverage : "watermelon",
       quantity : 1,
-      date : 10
+      date : date
     };
     let expected = {
       12345 : {
@@ -18,22 +19,25 @@ describe("insertTransaction", function() {
           {
             beverage : "watermelon",
             quantity : 1,
-            date : 10
+            date : date,
+            empid : 12345
           }
         ]
       }
     };
-    assert.deepStrictEqual(insertTransaction(12345, newTransaction, currentData), expected);
+    assert.deepEqual(insertTransaction(12345, newTransaction, currentData), expected);
   });
 
   it("should add new transaction to the existing empid", function() {
+    let date = new Date().toJSON();
     let currentData = {
       12345 : {
         beverages : [
           {
             beverage : "Orange",
             quantity : 1,
-            date : '9-9-19'
+            date : date,
+            empid : 12345
           }
         ]
       }
@@ -41,7 +45,7 @@ describe("insertTransaction", function() {
     let newTransaction = {
       beverage : "watermelon",
       quantity : 1,
-      date : '9-9-19'
+      date : date,
     };
     let expected = {
       12345 : {
@@ -49,12 +53,14 @@ describe("insertTransaction", function() {
           {
             beverage : "Orange",
             quantity : 1,
-            date : '9-9-19'
+            date : date,
+            empid : 12345
           },
           {
             beverage : "watermelon",
             quantity : 1,
-            date : '9-9-19'
+            date : date,
+            empid : 12345
           }
         ]
       }
