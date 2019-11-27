@@ -1,16 +1,21 @@
-const validateInput = function(userInput) {
-  let transaction = {};
+const parseInput = function(userInput) {
   let option = userInput[0];
-  let groupedArgs = getGroupedArguments(userInput.slice(1));
-  transaction.details = groupedArgs.reduce(parseDetails, {});
-  transaction.isValid = isValidOptions(option, groupedArgs) && isRequiredArgsAvailable(option, transaction.details);
-  return transaction;
+  let validOptions = {
+    '--save' : ['--beverage','--empid','--qty'],
+    '--query' : ['--empid','--date']
+  };
+  let transactionDetails = parseTransactionDetails(userInput.slice(1));
+  isValid = isValidOptions(option, Object.entries(transactionDetails), validOptions) && 
+    isRequiredArgsAvailable(option, transactionDetails, validOptions);
+  return {isValid, transactionDetails};
 };
 
-const parseDetails = function(details, argument) {
-  let option = argument[0];
-  details[option] = argument[1];
-  return details;
+const parseTransactionDetails = function(cmdArgs) {
+  let groupedArgs = {};
+  for(let index = 0;index < cmdArgs.length; index += 2) {
+    groupedArgs[cmdArgs[index]] = cmdArgs[index + 1];
+  }
+  return groupedArgs;
 };
 
 const isValidBeverage = function(beverage) {
@@ -44,19 +49,7 @@ const isValidArgs = function(cmdArg) {
   return options[option](value);
 };
 
-const getGroupedArguments = function(cmdArgs) {
-  let groupedArgs = [];
-  for(let index = 0;index < cmdArgs.length; index += 2) {
-    groupedArgs.push(cmdArgs.slice(index, index + 2));
-  }
-  return groupedArgs;
-};
-
-const isValidOptions = function(option, groupedArgs) {
-  let validOptions = {
-    '--save' : ['--beverage','--empid','--qty'],
-    '--query' : ['--empid','--date']
-  };
+const isValidOptions = function(option, groupedArgs, validOptions) {
   if(Object.keys(validOptions).includes(option)) {
     return groupedArgs.every(function(argument) {
       let userOption = argument[0];
@@ -66,31 +59,23 @@ const isValidOptions = function(option, groupedArgs) {
   return false;
 };
 
-const isRequiredArgsAvailable = function(option, details) {
-  let validOptions = {
-    '--save' : ['--beverage','--empid','--qty'],
-    '--query' : ['--empid','--date']
-  };
+const isRequiredArgsAvailable = function(option, details, validOptions) {
   let isArgsAvailable = false;
   if(option === '--save') {
     isArgsAvailable = validOptions[option].every(function(userOption) {
       return Object.keys(details).includes(userOption);
     })
   }
-  if(option === '--query') {    
+  if(option === '--query') {
     isArgsAvailable = validOptions[option].some(function(userOption) {
       return Object.keys(details).includes(userOption);
     })
   }
   return isArgsAvailable;
-}
+};
 
-exports.validateInput = validateInput;
-exports.getGroupedArguments = getGroupedArguments;
+exports.parseInput = parseInput;
 exports.isValidArgs = isValidArgs;
-exports.isValidEmpid = isValidEmpid;
-exports.isValidQuantity = isValidQuantity;
-exports.isValidDate = isValidDate;
-exports.parseDetails = parseDetails;
+exports.parseTransactionDetails = parseTransactionDetails;
 exports.isValidOptions = isValidOptions;
 exports.isRequiredArgsAvailable = isRequiredArgsAvailable;

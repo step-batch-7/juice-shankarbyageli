@@ -3,6 +3,7 @@ const insertTransaction = require("../src/utilities").insertTransaction;
 const getTransactionObj = require('../src/utilities').getTransactionObj;
 const getBeverageDetails = require('../src/utilities').getBeverageDetails;
 const readTransactions = require('../src/utilities').readTransactions;
+const writeIntoTransactions = require('../src/utilities').writeIntoTransactions;
 
 describe("insertTransaction", function() {
   it("should add new Transaction to the non-existing empid", function() {
@@ -14,16 +15,14 @@ describe("insertTransaction", function() {
       date : date
     };
     let expected = {
-      12345 : {
-        beverages : [
-          {
-            beverage : "watermelon",
-            quantity : 1,
-            date : date,
-            empid : 12345
-          }
-        ]
-      }
+      12345 : [
+        {
+          beverage : "watermelon",
+          quantity : 1,
+          date : date,
+          empid : 12345
+        }
+      ]
     };
     assert.deepEqual(insertTransaction(12345, newTransaction, currentData), expected);
   });
@@ -31,16 +30,14 @@ describe("insertTransaction", function() {
   it("should add new transaction to the existing empid", function() {
     let date = new Date().toJSON();
     let currentData = {
-      12345 : {
-        beverages : [
-          {
-            beverage : "Orange",
-            quantity : 1,
-            date : date,
-            empid : 12345
-          }
-        ]
-      }
+      12345 : [
+        {
+          beverage : "Orange",
+          quantity : 1,
+          date : date,
+          empid : 12345
+        }
+      ]
     };
     let newTransaction = {
       beverage : "watermelon",
@@ -48,22 +45,20 @@ describe("insertTransaction", function() {
       date : date,
     };
     let expected = {
-      12345 : {
-        beverages : [
-          {
-            beverage : "Orange",
-            quantity : 1,
-            date : date,
-            empid : 12345
-          },
-          {
-            beverage : "watermelon",
-            quantity : 1,
-            date : date,
-            empid : 12345
-          }
-        ]
-      }
+      12345 : [
+        {
+          beverage : "Orange",
+          quantity : 1,
+          date : date,
+          empid : 12345
+        },
+        {
+          beverage : "watermelon",
+          quantity : 1,
+          date : date,
+          empid : 12345
+        }
+      ]
     };
     assert.deepStrictEqual(insertTransaction(12345, newTransaction, currentData), expected);
   });
@@ -135,5 +130,14 @@ describe("readTransactions", function() {
     let actual = readTransactions('filepath', fileExists, readFile);
     let expected = {};
     assert.deepStrictEqual(actual, expected);
+  });
+});
+
+describe("writeIntoTransactions", function() {
+  it("should write the new transaction in the file", function() {
+    const fileWriter = function(filePath, content) {
+      assert.equal(filePath, "somepath");
+    }
+    let actual = writeIntoTransactions("somepath", {key : "value"}, fileWriter);
   });
 });

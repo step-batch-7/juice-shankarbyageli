@@ -33,18 +33,18 @@ const getTransactionObj = function(transaction, date) {
   return transactionObj;
 };
 
-const writeIntoTransactions = function(records) {
+const writeIntoTransactions = function(filePath, records, fileWriter) {
   let transaction = JSON.stringify(records);
-  fs.writeFileSync('./transactions.json', transaction, 'utf8');
+  fileWriter(filePath, transaction, 'utf8');
 }
 
 const insertTransaction = function(empid, transactionObj, records) {
   transactionObj.empid = empid;
   if(!Object.keys(records).includes(String(empid))) {
     records[empid] = {};
-    records[empid]["beverages"] = [];
+    records[empid] = [];
   }
-  records[empid]["beverages"].push(transactionObj);
+  records[empid].push(transactionObj);
   return records;
 };
 
