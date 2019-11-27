@@ -83,7 +83,7 @@ describe("isRequiredArgsAvailable", function() {
       '--qty' : 2
     };
     let actual = isRequiredArgsAvailable('--save',details);
-    assert.strictEqual(actual, true);
+    assert.strictEqual(actual, false);
   });
 });
 
