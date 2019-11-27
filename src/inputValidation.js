@@ -5,7 +5,7 @@ const parseInput = function(userInput) {
     '--query' : ['--empid','--date']
   };
   let transactionDetails = parseTransactionDetails(userInput.slice(1));
-  isValid = isValidOptions(option, Object.entries(transactionDetails), validOptions) && 
+  let isValid = isValidOptions(option, Object.entries(transactionDetails), validOptions) && 
     isRequiredArgsAvailable(option, transactionDetails, validOptions);
   return {isValid, transactionDetails};
 };
@@ -19,7 +19,7 @@ const parseTransactionDetails = function(cmdArgs) {
 };
 
 const isValidBeverage = function(beverage) {
-  return true;
+  return beverage.length > 0;
 };
 
 const isValidEmpid = function(empid) {
@@ -60,18 +60,17 @@ const isValidOptions = function(option, groupedArgs, validOptions) {
 };
 
 const isRequiredArgsAvailable = function(option, details, validOptions) {
-  let isArgsAvailable = false;
-  if(option === '--save') {
-    isArgsAvailable = validOptions[option].every(function(userOption) {
-      return Object.keys(details).includes(userOption);
-    })
+  let requiredOptions = {
+    '--save' : validOptions[option].every(isOptionExists(details)),
+    '--query' : validOptions[option].some(isOptionExists(details))
+  };
+  return requiredOptions[option];
+};
+
+const isOptionExists = function(details) {
+  return function(userOption) {
+    return Object.keys(details).includes(userOption);
   }
-  if(option === '--query') {
-    isArgsAvailable = validOptions[option].some(function(userOption) {
-      return Object.keys(details).includes(userOption);
-    })
-  }
-  return isArgsAvailable;
 };
 
 exports.parseInput = parseInput;

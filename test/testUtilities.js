@@ -12,6 +12,7 @@ describe("insertTransaction", function() {
     let newTransaction = {
       beverage : "watermelon",
       quantity : 1,
+      empid : 12345,
       date : date
     };
     let expected = {
@@ -42,6 +43,7 @@ describe("insertTransaction", function() {
     let newTransaction = {
       beverage : "watermelon",
       quantity : 1,
+      empid : 12345,
       date : date,
     };
     let expected = {
@@ -71,6 +73,7 @@ describe("getTransactionObj", function() {
     let expected = {
       beverage : "mango",
       quantity : '2',
+      empid : '25340',
       date : date
     }
     assert.deepStrictEqual(actual, expected);
@@ -137,6 +140,7 @@ describe("writeIntoTransactions", function() {
   it("should write the new transaction in the file", function() {
     const fileWriter = function(filePath, content) {
       assert.equal(filePath, "somepath");
+      assert.equal(content, '{"key":"value"}');
     }
     let actual = writeIntoTransactions("somepath", {key : "value"}, fileWriter);
   });

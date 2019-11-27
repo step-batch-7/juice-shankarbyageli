@@ -28,6 +28,7 @@ const getTransactionObj = function(transaction, date) {
   let transactionObj = {
     beverage : transaction["--beverage"],
     quantity : transaction["--qty"],
+    empid : transaction["--empid"],
     date : date
   }
   return transactionObj;
@@ -39,9 +40,7 @@ const writeIntoTransactions = function(filePath, records, fileWriter) {
 }
 
 const insertTransaction = function(empid, transactionObj, records) {
-  transactionObj.empid = empid;
   if(!Object.keys(records).includes(String(empid))) {
-    records[empid] = {};
     records[empid] = [];
   }
   records[empid].push(transactionObj);
