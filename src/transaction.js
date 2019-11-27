@@ -9,25 +9,15 @@ const getSavedPrintFormat = require('./utilities').getSavedPrintFormat;
 const getQueryResultFormat = require('./utilities').getQueryResultFormat;
 
 const getTransactionResult = function(userInput, date) {
-  let {isValid, transactionDetails} = parseInput(userInput);
   let option = userInput[0];
+  let {isValid, transactionDetails} = parseInput(userInput);
   if(isValid) {
-    return performTransaction(option, transactionDetails, date);
+    let records = readTransactions('./transactions.json', fs.existsSync ,fs.readFileSync);
+    return option === '--save' ? performSaveTransaction(records, transactionDetails, date) :
+      performQueryTransaction(records, transactionDetails);
   }
   let invalidMsg = ["Invalid Options !"];
   return invalidMsg;
-};
-
-const performTransaction = function(option, transaction, date) {
-  let currentRecords = 
-  readTransactions('./transactions.json', fs.existsSync ,fs.readFileSync);
-  let result = [];
-  if(option == "--save") {
-    result = performSaveTransaction(currentRecords, transaction, date);
-  } else {
-    result = performQueryTransaction(currentRecords, transaction);
-  }
-  return result;
 };
 
 const performSaveTransaction = function(currentRecords, transactionDetails, date) {
@@ -51,25 +41,25 @@ const performQueryTransaction = function(currentRecords, transaction) {
 const getDetailsOfGivenID = function(records, empid) {
   let selectedEmpRecords = [];
   for(employeeId in records) {
-    let filterEmpid = empid || employeeId;
-    if(employeeId == filterEmpid) {
-      selectedEmpRecords = 
-      selectedEmpRecords.concat(records[employeeId]);
+    let empID = empid || employeeId;
+    if(employeeId == empID) {
+      selectedEmpRecords = selectedEmpRecords.concat(records[employeeId]);
     }
   }
   return selectedEmpRecords;
 };
 
 const getFilteredRecords = function(selectedEmpRecords, date) {
-  let selected = selectedEmpRecords.filter(function(subrecord) {
-    let recordDate = date || subrecord.date;
-    date = new Date(recordDate).toLocaleDateString();
-    return (date == new Date(subrecord.date).toLocaleDateString());
+  if(!date) {
+    return selectedEmpRecords;
+  }
+  let selected = selectedEmpRecords.filter(function(record) {
+    let filterDate = new Date(date).toLocaleDateString();
+    return (filterDate == new Date(record.date).toLocaleDateString());
   });  
   return selected;
 };
 
-exports.performTransaction = performTransaction;
 exports.performSaveTransaction = performSaveTransaction;
 exports.performQueryTransaction = performQueryTransaction;
 exports.getFilteredRecords = getFilteredRecords;

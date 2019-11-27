@@ -1,7 +1,6 @@
 const assert = require("assert");
 const performSaveTransaction = require("../src/transaction.js").performSaveTransaction;
 const performQueryTransaction = require("../src/transaction").performQueryTransaction;
-const performTransaction = require("../src/transaction").performTransaction;
 const getFilteredRecords = require("../src/transaction").getFilteredRecords;
 const getDetailsOfGivenID = require("../src/transaction").getDetailsOfGivenID;
 const getTransactionResult = require("../src/transaction").getTransactionResult;
@@ -87,29 +86,6 @@ describe("performQueryTranasaction", function() {
   });
 });
 
-describe("performTransaction", function() {
-  it("should perform save transaction", function() {
-    let date = new Date().toJSON();
-    let currentData = {};
-    let newTransaction = {
-      "--beverage": "watermelon",
-      "--qty": 1,
-      "--empid": 12345
-    };
-    let expected = [
-      "Transaction Recorded:",
-      "Employee ID, Beverage, Quantity, Date",
-      `12345,watermelon,1,${date}`
-    ];
-    let actual = performTransaction(
-      "--save",
-      newTransaction,
-      new Date().toJSON()
-    );
-    assert.deepStrictEqual(actual, expected);
-  });
-});
-
 describe("getDetailsOfGivenId", function() {
   it("should give details of given emp id", function() {
     let date = new Date().toJSON();
@@ -148,6 +124,26 @@ describe("getDetailsOfGivenId", function() {
     };
     let actual = getDetailsOfGivenID(records, 25340);
     let expected = [];
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("should return all records if empid not given", function(){
+    let date = new Date().toJSON();
+    let records = {
+      12345: [
+        {
+          beverage: "Orange",
+          quantity: 1,
+          date: date
+        }
+      ]
+    };
+    let actual = getDetailsOfGivenID(records);
+    let expected = [{
+      beverage: "Orange",
+      quantity: 1,
+      date: date
+    }];
     assert.deepStrictEqual(actual, expected);
   });
 });
