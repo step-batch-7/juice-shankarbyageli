@@ -8,7 +8,8 @@ const getSavedPrintFormat = require('./utilities').getSavedPrintFormat;
 const getQueryResultFormat = require('./utilities').getQueryResultFormat;
 
 const performTransaction = function(option, transaction, date) {
-  let currentRecords = readTransactions('./transactions.json', fs.existsSync ,fs.readFileSync);
+  let currentRecords = 
+  readTransactions('./transactions.json', fs.existsSync ,fs.readFileSync);
   let result = [];
   if(option == "--save") {
     result = performSaveTransaction(currentRecords, transaction, date);
@@ -42,7 +43,8 @@ const getDetailsOfGivenID = function(records, empId) {
     let empid = empId || employeeId;
     records = addEmpIdToDetails(records, empid);
     if(employeeId == empid) {
-      selectedEmpRecords = selectedEmpRecords.concat(records[employeeId]["beverages"]);
+      selectedEmpRecords = 
+      selectedEmpRecords.concat(records[employeeId]["beverages"]);
     }
   }
   return selectedEmpRecords;

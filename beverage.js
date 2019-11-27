@@ -1,4 +1,4 @@
-const performTransaction = require('./src/performTransaction.js').performTransaction;
+const performTransaction = require('./src/transaction.js').performTransaction;
 const validateInput = require('./src/inputValidation.js').validateInput;
 
 const main = function() {

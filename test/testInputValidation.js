@@ -5,6 +5,8 @@ const isValidEmpid = require('../src/inputValidation').isValidEmpid;
 const isValidQuantity = require('../src/inputValidation').isValidQuantity;
 const isValidDate = require('../src/inputValidation').isValidDate;
 const parseDetails = require('../src/inputValidation').parseDetails;
+const isValidOptions = require('../src/inputValidation').isValidOptions;
+const isRequiredArgsAvailable = require('../src/inputValidation').isRequiredArgsAvailable;
 const assert = require('assert');
 
 describe("testIsValidArgs", function() {
@@ -49,12 +51,39 @@ describe("testGetGroupedArgs", function() {
     expected = [['--empid','123']];
     assert.deepEqual(actual, expected);
   });
+});
 
-  it("should not group invalid arguments", function() {
-    let args = ['--emp',1234];
-    let expected = [];
-    let actual = getGroupedArguments(args);
-    assert.deepStrictEqual(actual, expected);
+describe("isValidOptions", function() {
+  it("should validate valid input", function() {
+    let input = [['--beverage','orange'],['--empid','1234'],['--qty','2']];
+    let actual = isValidOptions('--save',input);
+    assert.strictEqual(actual, true);
+  });
+
+  it("should validate invalid input", function() {
+    let input = [['--beverage','orange'],['--qty','2']];
+    let actual = isValidOptions('--query',input);
+    assert.strictEqual(actual, false);
+  })
+});
+
+describe("isRequiredArgsAvailable", function() {
+  it("should check if required args available for save option", function() {
+    let details = {
+      '--empid' : 1234,
+      '--date' : 2012-12-20
+    };
+    let actual = isRequiredArgsAvailable('--query',details);
+    assert.strictEqual(actual, true);
+  });
+
+  it("should check if required args available for save option", function() {
+    let details = {
+      '--empid' : 1234,
+      '--qty' : 2
+    };
+    let actual = isRequiredArgsAvailable('--save',details);
+    assert.strictEqual(actual, true);
   });
 });
 

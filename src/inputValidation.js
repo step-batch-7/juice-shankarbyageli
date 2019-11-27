@@ -1,9 +1,9 @@
 const validateInput = function(userInput) {
   let transaction = {};
+  let option = userInput[0];
   let groupedArgs = getGroupedArguments(userInput.slice(1));
-  transaction.isValid = (groupedArgs != 0);
-  transaction.isValid = ["--save","--query"].includes(userInput[0]);
   transaction.details = groupedArgs.reduce(parseDetails, {});
+  transaction.isValid = isValidOptions(option, groupedArgs) && isRequiredArgsAvailable(option, transaction.details);
   return transaction;
 };
 
@@ -41,22 +41,49 @@ const isValidArgs = function(cmdArg) {
     "--qty" : isValidQuantity,
     "--date" : isValidDate
   };
-  
-  if(["--beverage", "--empid", "--qty", "--date"].includes(option)) {
-    return options[option](value);
-  }
+  return options[option](value);
 };
 
 const getGroupedArguments = function(cmdArgs) {
-  let cmdGroups = [];
+  let groupedArgs = [];
   for(let index = 0;index < cmdArgs.length; index += 2) {
-    cmdGroups.push(cmdArgs.slice(index, index + 2));
+    groupedArgs.push(cmdArgs.slice(index, index + 2));
   }
-  if(cmdGroups.every(isValidArgs)) {
-    return cmdGroups;
-  }
-  return [];
+  return groupedArgs;
 };
+
+const isValidOptions = function(option, groupedArgs) {
+  let validOptions = {
+    '--save' : ['--beverage','--empid','--qty'],
+    '--query' : ['--empid','--date']
+  };
+  if(Object.keys(validOptions).includes(option)) {
+    return groupedArgs.every(function(argument) {
+      let userOption = argument[0];
+      return validOptions[option].includes(userOption) && isValidArgs(argument);
+    })
+  }
+  return false;
+};
+
+const isRequiredArgsAvailable = function(option, details) {
+  let validOptions = {
+    '--save' : ['--beverage','--empid','--qty'],
+    '--query' : ['--empid','--date']
+  };
+  let isArgsAvailable = false;
+  if(option === '--save') {
+    isArgsAvailable = validOptions[option].every(function(userOption) {
+      return Object.keys(details).includes(userOption);
+    })
+  }
+  if(option === '--query') {    
+    isArgsAvailable = validOptions[option].some(function(userOption) {
+      return Object.keys(details).includes(userOption);
+    })
+  }
+  return isArgsAvailable;
+}
 
 exports.validateInput = validateInput;
 exports.getGroupedArguments = getGroupedArguments;
@@ -65,3 +92,5 @@ exports.isValidEmpid = isValidEmpid;
 exports.isValidQuantity = isValidQuantity;
 exports.isValidDate = isValidDate;
 exports.parseDetails = parseDetails;
+exports.isValidOptions = isValidOptions;
+exports.isRequiredArgsAvailable = isRequiredArgsAvailable;
