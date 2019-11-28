@@ -33,8 +33,9 @@ const isValidQuantity = function(qty) {
 };
 
 const isValidDate = function(date) {
-  date = new Date(date);
-  return date != 'Invalid Date';
+  let dateFormat = new RegExp('[0-9]{3,}-[0-1]{0,1}[0-9]{0,1}-[0-3]{0,1}[0-9]{1,1}');
+  let dateObj = new Date(date);
+  return dateObj != 'Invalid Date' && dateFormat.test(date);
 };
 
 const isValidArgs = function(cmdArg) {

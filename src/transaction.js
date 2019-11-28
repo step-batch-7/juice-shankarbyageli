@@ -8,16 +8,26 @@ const getBeverageDetails = require('./utilities').getBeverageDetails;
 const getSavedPrintFormat = require('./utilities').getSavedPrintFormat;
 const getQueryResultFormat = require('./utilities').getQueryResultFormat;
 
-const getTransactionResult = function(userInput, date) {
-  let option = userInput[0];
-  let {isValid, transactionDetails} = parseInput(userInput);
-  if(isValid) {
-    let records = readTransactions('./transactions.json', fs.existsSync ,fs.readFileSync);
-    return option === '--save' ? performSaveTransaction(records, transactionDetails, date) :
-      performQueryTransaction(records, transactionDetails);
+const getDetailsOfGivenID = function(records, empid) {
+  let selectedEmpRecords = [];
+  for(employeeId in records) {
+    let empID = empid || employeeId;
+    if(employeeId == empID) {
+      selectedEmpRecords = selectedEmpRecords.concat(records[employeeId]);
+    }
   }
-  let invalidMsg = ["Invalid Options !"];
-  return invalidMsg;
+  return selectedEmpRecords;
+};
+
+const getFilteredRecords = function(selectedEmpRecords, date, beverage) {
+  let selected = selectedEmpRecords.filter(function(record) {
+    date = date || record.date;
+    beverage = beverage || record.beverage;
+    let filterDate = new Date(date).toLocaleDateString();
+    let isGivenBeverage = record.beverage === beverage;
+    return (filterDate == new Date(record.date).toLocaleDateString() && isGivenBeverage);
+  });  
+  return selected;
 };
 
 const performSaveTransaction = function(currentRecords, transactionDetails, date) {
@@ -39,26 +49,16 @@ const performQueryTransaction = function(currentRecords, transaction) {
   return getQueryResultFormat(beverageDetails, beverageCount);
 };
 
-const getDetailsOfGivenID = function(records, empid) {
-  let selectedEmpRecords = [];
-  for(employeeId in records) {
-    let empID = empid || employeeId;
-    if(employeeId == empID) {
-      selectedEmpRecords = selectedEmpRecords.concat(records[employeeId]);
-    }
+const getTransactionResult = function(userInput, date) {
+  let option = userInput[0];
+  let {isValid, transactionDetails} = parseInput(userInput);
+  if(isValid) {
+    let records = readTransactions('./transactions.json', fs.existsSync ,fs.readFileSync);
+    return option === '--save' ? performSaveTransaction(records, transactionDetails, date) :
+      performQueryTransaction(records, transactionDetails);
   }
-  return selectedEmpRecords;
-};
-
-const getFilteredRecords = function(selectedEmpRecords, date, beverage) {
-  let selected = selectedEmpRecords.filter(function(record) {
-    date = date || record.date;
-    beverage = beverage || record.beverage;
-    let filterDate = new Date(date).toLocaleDateString();
-    let isGivenBeverage = record.beverage === beverage;
-    return (filterDate == new Date(record.date).toLocaleDateString() && isGivenBeverage);
-  });  
-  return selected;
+  let invalidMsg = ["Invalid Options !"];
+  return invalidMsg;
 };
 
 exports.performSaveTransaction = performSaveTransaction;

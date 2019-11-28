@@ -74,7 +74,7 @@ describe("getTransactionObj", function() {
       beverage : "mango",
       quantity : '2',
       empid : '25340',
-      date : date
+      date : date.toJSON()
     }
     assert.deepStrictEqual(actual, expected);
   });

@@ -7,7 +7,7 @@ const getTransactionResult = require('../src/transaction').getTransactionResult;
 
 describe("performSaveTransaction", function() {
   it("should add new Transaction to the non-existing empid", function() {
-    let date = new Date().toJSON();
+    let date = new Date();
     let currentData = {};
     let newTransaction = {
       "--beverage": "watermelon",
@@ -17,7 +17,7 @@ describe("performSaveTransaction", function() {
     let expected = [
       "Transaction Recorded:",
       "Employee ID, Beverage, Quantity, Date",
-      `12345,watermelon,1,${date}`
+      `12345,watermelon,1,${date.toJSON()}`
     ];
     let actual = performSaveTransaction(currentData, newTransaction, date);
     assert.deepStrictEqual(actual, expected);
@@ -179,13 +179,13 @@ describe("getTransactionResult", function() {
   });
 
   it("should perform given transaction for valid input", function() {
-    let date = new Date().toJSON();
+    let date = new Date();
     let input = ['--save','--beverage','orange','--empid','1234','--qty','2'];
     let actual = getTransactionResult(input, date);
     let expected = [
       "Transaction Recorded:",
       "Employee ID, Beverage, Quantity, Date",
-      `1234,orange,2,${date}`
+      `1234,orange,2,${date.toJSON()}`
     ];
     assert.deepStrictEqual(actual, expected);
   });

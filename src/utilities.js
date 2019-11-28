@@ -27,7 +27,7 @@ const getTransactionObj = function(transaction, date) {
     beverage : transaction["--beverage"],
     quantity : transaction["--qty"],
     empid : transaction["--empid"],
-    date : date
+    date : date.toJSON()
   }
   return transactionObj;
 };
