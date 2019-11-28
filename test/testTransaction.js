@@ -25,7 +25,35 @@ describe("performSaveTransaction", function() {
 });
 
 describe("getFilteredRecords", function() {
-  it("should filter given records by given filter", function() {
+  it("should filter given records by given date filter", function() {
+    let date = new Date().toJSON();
+    let records = [
+      {
+        beverage: "mango",
+        quantity: 1,
+        date: date,
+        empid: 12345
+      },
+      {
+        beverage: "orange",
+        quantity: 1,
+        date: new Date('2019-10-12'),
+        empid: 12345
+      }
+    ];
+    let actual = getFilteredRecords(records, date);
+    let expected = [
+      {
+        beverage: "mango",
+        quantity: 1,
+        date: date,
+        empid: 12345
+      },
+    ];
+    assert.deepStrictEqual(actual, expected);
+  });
+
+  it("should filter given records based on given beverage", function() {
     let date = new Date().toJSON();
     let records = [
       {
@@ -41,20 +69,14 @@ describe("getFilteredRecords", function() {
         empid: 12345
       }
     ];
-    let actual = getFilteredRecords(records, date);
+    let actual = getFilteredRecords(records, date, "orange");
     let expected = [
-      {
-        beverage: "mango",
-        quantity: 1,
-        date: date,
-        empid: 12345
-      },
       {
         beverage: "orange",
         quantity: 1,
         date: date,
         empid: 12345
-      }
+      },
     ];
     assert.deepStrictEqual(actual, expected);
   });

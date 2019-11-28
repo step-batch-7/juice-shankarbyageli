@@ -2,7 +2,7 @@ const parseInput = function(userInput) {
   let option = userInput[0];
   let validOptions = {
     '--save' : ['--beverage','--empid','--qty'],
-    '--query' : ['--empid','--date']
+    '--query' : ['--empid','--date','--beverage']
   };
   let transactionDetails = parseTransactionDetails(userInput.slice(1));
   let isValid = isValidOptions(option, Object.entries(transactionDetails), validOptions) && 

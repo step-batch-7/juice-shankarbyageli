@@ -32,6 +32,7 @@ const performQueryTransaction = function(currentRecords, transaction) {
   let selectedEmpRecords = [];
   let empId = transaction['--empid'];
   let date = transaction['--date'];
+  let beverage = transaction['--beverage'];
   selectedEmpRecords = getDetailsOfGivenID(currentRecords, empId);
   let selectedRecords = getFilteredRecords(selectedEmpRecords, date);
   let {beverageDetails, beverageCount} = getBeverageDetails(selectedRecords);
@@ -49,13 +50,13 @@ const getDetailsOfGivenID = function(records, empid) {
   return selectedEmpRecords;
 };
 
-const getFilteredRecords = function(selectedEmpRecords, date) {
-  if(!date) {
-    return selectedEmpRecords;
-  }
+const getFilteredRecords = function(selectedEmpRecords, date, beverage) {
   let selected = selectedEmpRecords.filter(function(record) {
+    date = date || record.date;
+    beverage = beverage || record.beverage;
     let filterDate = new Date(date).toLocaleDateString();
-    return (filterDate == new Date(record.date).toLocaleDateString());
+    let isGivenBeverage = record.beverage === beverage;
+    return (filterDate == new Date(record.date).toLocaleDateString() && isGivenBeverage);
   });  
   return selected;
 };
