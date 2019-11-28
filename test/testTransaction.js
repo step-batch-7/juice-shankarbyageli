@@ -1,130 +1,78 @@
 const assert = require('chai').assert;
 const performSaveTransaction = require('../src/transaction.js').performSaveTransaction;
 const performQueryTransaction = require('../src/transaction').performQueryTransaction;
-const getFilteredRecords = require('../src/transaction').getFilteredRecords;
-const getDetailsOfGivenID = require('../src/transaction').getDetailsOfGivenID;
 const getTransactionResult = require('../src/transaction').getTransactionResult;
+const filterByEmpId = require('../src/transaction').filterByEmpId;
+const filterByBeverage = require('../src/transaction').filterByBeverage;
+const filterByDate = require('../src/transaction').filterByDate;
 
-describe("performSaveTransaction", function() {
-  it("should add new Transaction to the non-existing empid", function() {
+describe('performSaveTransaction', function() {
+  it('should add new Transaction to the non-existing empid', function() {
     let date = new Date();
-    let currentData = {};
+    let currentData = [];
     let newTransaction = {
-      "--beverage": "watermelon",
-      "--qty": 1,
-      "--empid": 12345
+      '--empid': 12345,
+      '--beverage': 'watermelon',
+      '--qty': 1,
     };
     let expected = [
-      "Transaction Recorded:",
-      "Employee ID, Beverage, Quantity, Date",
+      'Transaction Recorded:',
+      'Employee ID, Beverage, Quantity, Date',
       `12345,watermelon,1,${date.toJSON()}`
     ];
-    let actual = performSaveTransaction(currentData, newTransaction, date);
+    const writer = function() {
+      return ;
+    }
+    let actual = performSaveTransaction(currentData, newTransaction, writer, date);
     assert.deepStrictEqual(actual, expected);
   });
 });
 
-describe("getFilteredRecords", function() {
-  it("should filter given records by given date filter", function() {
+describe('performQueryTranasaction', function() {
+  it('should return details of given employee in array', function() {
     let date = new Date().toJSON();
-    let records = [
+    let currentData = [
       {
-        beverage: "mango",
+        empid : 12345,
+        beverage: 'Orange',
         quantity: 1,
-        date: date,
-        empid: 12345
-      },
-      {
-        beverage: "orange",
-        quantity: 1,
-        date: new Date('2019-10-12'),
-        empid: 12345
+        date: date
       }
     ];
-    let actual = getFilteredRecords(records, date);
-    let expected = [
-      {
-        beverage: "mango",
-        quantity: 1,
-        date: date,
-        empid: 12345
-      },
-    ];
-    assert.deepStrictEqual(actual, expected);
-  });
-
-  it("should filter given records based on given beverage", function() {
-    let date = new Date().toJSON();
-    let records = [
-      {
-        beverage: "mango",
-        quantity: 1,
-        date: date,
-        empid: 12345
-      },
-      {
-        beverage: "orange",
-        quantity: 1,
-        date: date,
-        empid: 12345
-      }
-    ];
-    let actual = getFilteredRecords(records, date, "orange");
-    let expected = [
-      {
-        beverage: "orange",
-        quantity: 1,
-        date: date,
-        empid: 12345
-      },
-    ];
-    assert.deepStrictEqual(actual, expected);
-  });
-});
-
-describe("performQueryTranasaction", function() {
-  it("should return details of given employee in array", function() {
-    let date = new Date().toJSON();
-    let currentData = {
-      12345: [
-        {
-          beverage: "Orange",
-          quantity: 1,
-          date: date,
-          empid : 12345
-        }
-      ]
-    };
     let newTransaction = {
-      "--empid": 12345
+      '--empid': 12345
     };
     let actual = performQueryTransaction(currentData, newTransaction);
     let expected = [
-      "Employee ID, Beverage, Quantity, Date",
+      'Employee ID, Beverage, Quantity, Date',
       `12345,Orange,1,${date}`,
-      "total : 1 juices"
+      'total : 1 juices'
     ];
     assert.deepStrictEqual(actual, expected);
   });
 });
 
-describe("getDetailsOfGivenId", function() {
-  it("should give details of given emp id", function() {
+describe('filterByEmpId', function() {
+  it('should give details of given emp id', function() {
     let date = new Date().toJSON();
-    let records = {
-      12345: [
-        {
-          beverage: "Orange",
-          quantity: 1,
-          date: date,
-          empid : 12345
-        }
-      ]
-    };
-    let actual = getDetailsOfGivenID(records, 12345);
+    let records = [
+      {
+        empid : 12345,
+        beverage: 'Orange',
+        quantity: 1,
+        date: date,
+      },
+      {
+        empid : 25340,
+        beverage : 'Mango',
+        quantity : 1,
+        date : date
+      }
+    ];
+    let actual = filterByEmpId(records, 12345);
     let expected = [
       {
-        beverage: "Orange",
+        beverage: 'Orange',
         quantity: 1,
         date: date,
         empid: 12345
@@ -135,57 +83,104 @@ describe("getDetailsOfGivenId", function() {
 
   it("should not give details of empid if doesn't exist", function() {
     let date = new Date().toJSON();
-    let records = {
-      12345: [
-        {
-          beverage: "Orange",
-          quantity: 1,
-          date: date
-        }
-      ]
-    };
-    let actual = getDetailsOfGivenID(records, 25340);
+    let records = [
+      {
+        empid : 12345,
+        beverage: 'Orange',
+        quantity: 1,
+        date: date
+      }
+    ];
+    let actual = filterByEmpId(records, 25340);
     let expected = [];
-    assert.deepStrictEqual(actual, expected);
-  });
-
-  it("should return all records if empid not given", function(){
-    let date = new Date().toJSON();
-    let records = {
-      12345: [
-        {
-          beverage: "Orange",
-          quantity: 1,
-          date: date
-        }
-      ]
-    };
-    let actual = getDetailsOfGivenID(records);
-    let expected = [{
-      beverage: "Orange",
-      quantity: 1,
-      date: date
-    }];
     assert.deepStrictEqual(actual, expected);
   });
 });
 
-describe("getTransactionResult", function() {
-  it("should handle invalid transaction", function() {
+describe('filterByDate', function() {
+  it('should filter the records based on the date', function() {
+    let date = new Date();
+    let records = [
+      {
+        empid : 12345,
+        beverage: 'Orange',
+        quantity: 1,
+        date: date,
+      },
+      {
+        empid : 25340,
+        beverage : 'Mango',
+        quantity : 1,
+        date : new Date('2019-10-11')
+      }
+    ];
+    const actual = filterByDate(records, date);
+    const expected = [
+      {
+        empid : 12345,
+        beverage: 'Orange',
+        quantity: 1,
+        date: date,
+      }
+    ];
+    assert.deepStrictEqual(actual, expected);
+  });
+});
+
+describe('filterByBeverage', function() {
+  it('should filter the given records based on beverage', function(){
+    let date = new Date().toJSON();
+    let records = [
+      {
+        empid : 12345,
+        beverage: 'Orange',
+        quantity: 1,
+        date: date
+      },
+      {
+        empid : 12345,
+        beverage: 'Mango',
+        quantity: 1,
+        date: date
+      }
+    ];
+    let actual = filterByBeverage(records, 'Orange');
+    let expected = [
+      {
+        empid : 12345,
+        beverage: 'Orange',
+        quantity: 1,
+        date: date
+      }
+    ];
+    assert.deepStrictEqual(actual, expected);
+  });
+});
+
+describe('getTransactionResult', function() {
+  it('should handle invalid transaction', function() {
     let input = ['--save','--beverage','orange','--name','ravi'];
-    let actual = getTransactionResult(input);
-    let expected = ["Invalid Options !"]
+    let actual = getTransactionResult(input, {});
+    let expected = ['Invalid Options !']
     assert.deepStrictEqual(actual, expected);
   });
 
-  it("should perform given transaction for valid input", function() {
-    let date = new Date();
+  it('should perform given transaction for valid input', function() {
+    const helper = {
+      isFileExists : function() {
+        return;
+      },
+      writer : function() {
+        return;
+      },
+      date : new Date()
+    };
     let input = ['--save','--beverage','orange','--empid','1234','--qty','2'];
-    let actual = getTransactionResult(input, date);
+    let actual = getTransactionResult(input, helper);
     let expected = [
-      "Transaction Recorded:",
-      "Employee ID, Beverage, Quantity, Date",
-      `1234,orange,2,${date.toJSON()}`
+      'Transaction Recorded:',
+      'Employee ID, Beverage, Quantity, Date',
+      `1234,orange,2,${helper.date.toJSON()}`
     ];
     assert.deepStrictEqual(actual, expected);
   });

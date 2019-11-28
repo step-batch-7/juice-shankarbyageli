@@ -1,14 +1,14 @@
 const getQueryResultFormat = function(details, beverageCount) {
-  let heading = "Employee ID, Beverage, Quantity, Date";
+  let heading = 'Employee ID, Beverage, Quantity, Date';
   details = details.join('\n');
   let total = `total : ${beverageCount} juices`;
   return [heading, details, total];
 };
 
-const getSavedPrintFormat = function(empid, transaction) {
-  let recorded = "Transaction Recorded:";
-  let heading = "Employee ID, Beverage, Quantity, Date";
-  let detail = `${empid},${transaction.beverage},${transaction.quantity},${transaction.date}`;
+const getSavedPrintFormat = function(transaction) {
+  let recorded = 'Transaction Recorded:';
+  let heading = 'Employee ID, Beverage, Quantity, Date';
+  let detail = `${transaction.empid},${transaction.beverage},${transaction.quantity},${transaction.date}`;
   return [recorded, heading, detail];
 };
 
@@ -24,9 +24,9 @@ const getBeverageDetails = function(queryResult) {
 
 const getTransactionObj = function(transaction, date) {
   let transactionObj = {
-    beverage : transaction["--beverage"],
-    quantity : transaction["--qty"],
-    empid : transaction["--empid"],
+    empid : transaction['--empid'],
+    beverage : transaction['--beverage'],
+    quantity : transaction['--qty'],
     date : date.toJSON()
   }
   return transactionObj;
@@ -37,17 +37,14 @@ const writeIntoTransactions = function(filePath, records, fileWriter) {
   fileWriter(filePath, transaction, 'utf8');
 }
 
-const insertTransaction = function(empid, transactionObj, records) {
-  if(!Object.keys(records).includes(String(empid))) {
-    records[empid] = [];
-  }
-  records[empid].push(transactionObj);
+const insertTransaction = function(transactionObj, records) {
+  records.push(transactionObj);
   return records;
 };
 
 const readTransactions = function(filepath, fileExists, readFile) {
   if(!fileExists(filepath)) {
-    return JSON.parse('{}');
+    return JSON.parse('[]');
   }
   let transactions = readFile(filepath,'utf8');
   return JSON.parse(transactions);

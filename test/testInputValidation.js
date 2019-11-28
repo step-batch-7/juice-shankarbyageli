@@ -5,29 +5,29 @@ const parseInput = require('../src/inputValidation').parseInput;
 const isValidOptions = require('../src/inputValidation').isValidOptions;
 const isRequiredArgsAvailable = require('../src/inputValidation').isRequiredArgsAvailable;
 
-describe("isValidArgs", function() {
-  it("should validate cmd Arguments with beverage option", function() {
-    assert.strictEqual(isValidArgs(["--beverage","orange"]), true);
+describe('isValidArgs', function() {
+  it('should validate cmd Arguments with beverage option', function() {
+    assert.strictEqual(isValidArgs(['--beverage','orange']), true);
   });
 
-  it("should validate cmd Arguments with empid option", function() {
-    assert.strictEqual(isValidArgs(["--empid","25a"]), false);
-    assert.strictEqual(isValidArgs(["--empid","25340"]), true);
+  it('should validate cmd Arguments with empid option', function() {
+    assert.strictEqual(isValidArgs(['--empid','25a']), false);
+    assert.strictEqual(isValidArgs(['--empid','25340']), true);
   });
 
-  it("should validate cmd Arguments with quantity option", function() {
-    assert.strictEqual(isValidArgs(["--qty","3"]), true);
-    assert.strictEqual(isValidArgs(["--qty","x"]), false);
+  it('should validate cmd Arguments with quantity option', function() {
+    assert.strictEqual(isValidArgs(['--qty','3']), true);
+    assert.strictEqual(isValidArgs(['--qty','x']), false);
   });
 
-  it("should validate cmd Arguments with date option", function() {
-    assert.strictEqual(isValidArgs(["--date","2019-11-27"]), true);
-    assert.strictEqual(isValidArgs(["--date","2019-15-27"]), false);
+  it('should validate cmd Arguments with date option', function() {
+    assert.strictEqual(isValidArgs(['--date','2019-11-27']), true);
+    assert.strictEqual(isValidArgs(['--date','2019-15-27']), false);
   });
 });
 
-describe("parseInput", function() {
-  it("should validate and return arguments object", function() {
+describe('parseInput', function() {
+  it('should validate and return arguments object', function() {
     let input = ['--save','--beverage','orange','--empid','1234','--qty','2'];
     let actual = parseInput(input);
     let expected = {isValid : true, 
@@ -36,7 +36,7 @@ describe("parseInput", function() {
     assert.deepStrictEqual(actual, expected);
   });
 
-  it("should validate invalid input", function() {
+  it('should validate invalid input', function() {
     let input = ['--check','--date','2019-12-12'];
     let actual = parseInput(input);
     let expected = {
@@ -49,8 +49,8 @@ describe("parseInput", function() {
   });
 });
 
-describe("isValidOptions", function() {
-  it("should validate valid input", function() {
+describe('isValidOptions', function() {
+  it('should validate valid input', function() {
     let validOptions = {
       '--save' : ['--beverage','--empid','--qty'],
       '--query' : ['--empid','--date']
@@ -60,7 +60,7 @@ describe("isValidOptions", function() {
     assert.strictEqual(actual, true);
   });
 
-  it("should validate invalid input", function() {
+  it('should validate invalid input', function() {
     let validOptions = {
       '--save' : ['--beverage','--empid','--qty'],
       '--query' : ['--empid','--date']
@@ -71,8 +71,8 @@ describe("isValidOptions", function() {
   })
 });
 
-describe("isRequiredArgsAvailable", function() {
-  it("should check if required args available for save option", function() {
+describe('isRequiredArgsAvailable', function() {
+  it('should check if required args available for save option', function() {
     let validOptions = {
       '--save' : ['--beverage','--empid','--qty'],
       '--query' : ['--empid','--date']
@@ -85,7 +85,7 @@ describe("isRequiredArgsAvailable", function() {
     assert.strictEqual(actual, true);
   });
 
-  it("should check if required args available for save option", function() {
+  it('should check if required args available for save option', function() {
     let validOptions = {
       '--save' : ['--beverage','--empid','--qty'],
       '--query' : ['--empid','--date']
@@ -99,18 +99,18 @@ describe("isRequiredArgsAvailable", function() {
   });
 });
 
-describe("parseTransactionDetails", function() {
-  it("should add new key-value pair to existing obj", function() {
-    let argument = ["key","value"];
+describe('parseTransactionDetails', function() {
+  it('should add new key-value pair to existing obj', function() {
+    let argument = ['key','value'];
     let actual = parseTransactionDetails(argument);
-    let expected = {key : "value"};
+    let expected = {key : 'value'};
     assert.deepStrictEqual(actual, expected);
   });
 
-  it("should add value to existing key", function() {
-    let argument = ["key","newValue"];
+  it('should add value to existing key', function() {
+    let argument = ['key','newValue'];
     let actual = parseTransactionDetails(argument);
-    let expected = {key : "newValue"};
+    let expected = {key : 'newValue'};
     assert.deepStrictEqual(actual, expected);
   });
 });

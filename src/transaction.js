@@ -1,4 +1,3 @@
-const fs = require('fs');
 const readTransactions = require('./utilities').readTransactions;
 const writeIntoTransactions = require('./utilities').writeIntoTransactions;
 const parseInput = require('./inputValidation').parseInput;
@@ -8,61 +7,71 @@ const getBeverageDetails = require('./utilities').getBeverageDetails;
 const getSavedPrintFormat = require('./utilities').getSavedPrintFormat;
 const getQueryResultFormat = require('./utilities').getQueryResultFormat;
 
-const getDetailsOfGivenID = function(records, empid) {
-  let selectedEmpRecords = [];
-  for(employeeId in records) {
-    let empID = empid || employeeId;
-    if(employeeId == empID) {
-      selectedEmpRecords = selectedEmpRecords.concat(records[employeeId]);
-    }
+const filterByEmpId = function(records, empid) {
+  if(!empid) {
+    return records;
   }
-  return selectedEmpRecords;
+  return records.filter(function(record) {
+    return empid === record.empid;
+  });
 };
 
-const getFilteredRecords = function(selectedEmpRecords, date, beverage) {
-  let selected = selectedEmpRecords.filter(function(record) {
-    date = date || record.date;
-    beverage = beverage || record.beverage;
+const filterByDate = function(records, date) {
+  if(!date) {
+    return records;
+  }
+  return records.filter(function(record) {
     let filterDate = new Date(date).toLocaleDateString();
-    let isGivenBeverage = record.beverage === beverage;
-    return (filterDate == new Date(record.date).toLocaleDateString() && isGivenBeverage);
-  });  
-  return selected;
+    return filterDate === new Date(record.date).toLocaleDateString();
+  });
 };
 
-const performSaveTransaction = function(currentRecords, transactionDetails, date) {
-  let empid = transactionDetails['--empid'];
+const filterByBeverage = function(records, beverage) {
+  if(!beverage) {
+    return records;
+  }
+  return records.filter(function(record) {
+    return record.beverage === beverage
+  });
+};
+
+const performSaveTransaction = function(currentRecords, transactionDetails, writer, date) {
   let transactionObj = getTransactionObj(transactionDetails, date);
-  currentRecords = insertTransaction(empid, transactionObj, currentRecords);
-  writeIntoTransactions('./transactions.json', currentRecords, fs.writeFileSync);
-  return getSavedPrintFormat(empid, transactionObj);
+  currentRecords = insertTransaction(transactionObj, currentRecords);
+  writeIntoTransactions('./transactions.json', currentRecords, writer);
+  return getSavedPrintFormat(transactionObj);
 };
 
 const performQueryTransaction = function(currentRecords, transaction) {
-  let selectedEmpRecords = [];
   let empId = transaction['--empid'];
   let date = transaction['--date'];
   let beverage = transaction['--beverage'];
-  selectedEmpRecords = getDetailsOfGivenID(currentRecords, empId);
-  let selectedRecords = getFilteredRecords(selectedEmpRecords, date, beverage);
-  let {beverageDetails, beverageCount} = getBeverageDetails(selectedRecords);
+  let empidFilteredRecords = filterByEmpId(currentRecords, empId);
+  let dateFilteredRecords = filterByDate(empidFilteredRecords, date);
+  let beverageFilteredRecords = filterByBeverage(dateFilteredRecords, beverage);
+  let {beverageDetails, beverageCount} = getBeverageDetails(beverageFilteredRecords);
   return getQueryResultFormat(beverageDetails, beverageCount);
 };
 
-const getTransactionResult = function(userInput, date) {
+const getTransactionResult = function(userInput, helperObj) {
   let option = userInput[0];
   let {isValid, transactionDetails} = parseInput(userInput);
   if(isValid) {
-    let records = readTransactions('./transactions.json', fs.existsSync ,fs.readFileSync);
-    return option === '--save' ? performSaveTransaction(records, transactionDetails, date) :
-      performQueryTransaction(records, transactionDetails);
+    let records = readTransactions('./transactions.json', helperObj.isFileExists ,helperObj.readFile);
+    return option === '--save' ? performSaveTransaction(
+      records, 
+      transactionDetails,
+      helperObj.writer, 
+      helperObj.date
+    ) : performQueryTransaction(records, transactionDetails);
   }
-  let invalidMsg = ["Invalid Options !"];
+  let invalidMsg = ['Invalid Options !'];
   return invalidMsg;
 };
 
 exports.performSaveTransaction = performSaveTransaction;
 exports.performQueryTransaction = performQueryTransaction;
-exports.getFilteredRecords = getFilteredRecords;
-exports.getDetailsOfGivenID = getDetailsOfGivenID;
 exports.getTransactionResult = getTransactionResult;
+exports.filterByEmpId = filterByEmpId;
+exports.filterByDate = filterByDate;
+exports.filterByBeverage = filterByBeverage;

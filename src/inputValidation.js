@@ -42,10 +42,10 @@ const isValidArgs = function(cmdArg) {
   let option = cmdArg[0];
   let value = cmdArg[1];
   const options = {
-    "--beverage" : isValidBeverage,
-    "--empid" : isValidEmpid,
-    "--qty" : isValidQuantity,
-    "--date" : isValidDate
+    '--beverage' : isValidBeverage,
+    '--empid' : isValidEmpid,
+    '--qty' : isValidQuantity,
+    '--date' : isValidDate
   };
   return options[option](value);
 };
