@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('chai').assert;
 const insertTransaction = require("../src/utilities").insertTransaction;
 const getTransactionObj = require('../src/utilities').getTransactionObj;
 const getBeverageDetails = require('../src/utilities').getBeverageDetails;

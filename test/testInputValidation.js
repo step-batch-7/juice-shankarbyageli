@@ -1,10 +1,9 @@
-const getGroupedArguments = require('../src/inputValidation').getGroupedArguments;
+const assert = require('chai').assert;
 const isValidArgs = require('../src/inputValidation').isValidArgs;
 const parseTransactionDetails = require('../src/inputValidation').parseTransactionDetails;
 const parseInput = require('../src/inputValidation').parseInput;
 const isValidOptions = require('../src/inputValidation').isValidOptions;
 const isRequiredArgsAvailable = require('../src/inputValidation').isRequiredArgsAvailable;
-const assert = require('assert');
 
 describe("isValidArgs", function() {
   it("should validate cmd Arguments with beverage option", function() {

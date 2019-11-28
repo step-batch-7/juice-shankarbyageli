@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const getQueryResultFormat = function(details, beverageCount) {
   let heading = "Employee ID, Beverage, Quantity, Date";
   details = details.join('\n');

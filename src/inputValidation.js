@@ -61,8 +61,8 @@ const isValidOptions = function(option, groupedArgs, validOptions) {
 
 const isRequiredArgsAvailable = function(option, details, validOptions) {
   let requiredOptions = {
-    '--save' : validOptions[option].every(isOptionExists(details)),
-    '--query' : validOptions[option].some(isOptionExists(details))
+    '--save' : validOptions['--save'].every(isOptionExists(details)),
+    '--query' : validOptions['--query'].some(isOptionExists(details))
   };
   return requiredOptions[option];
 };

@@ -1,9 +1,9 @@
-const assert = require("assert");
-const performSaveTransaction = require("../src/transaction.js").performSaveTransaction;
-const performQueryTransaction = require("../src/transaction").performQueryTransaction;
-const getFilteredRecords = require("../src/transaction").getFilteredRecords;
-const getDetailsOfGivenID = require("../src/transaction").getDetailsOfGivenID;
-const getTransactionResult = require("../src/transaction").getTransactionResult;
+const assert = require('chai').assert;
+const performSaveTransaction = require('../src/transaction.js').performSaveTransaction;
+const performQueryTransaction = require('../src/transaction').performQueryTransaction;
+const getFilteredRecords = require('../src/transaction').getFilteredRecords;
+const getDetailsOfGivenID = require('../src/transaction').getDetailsOfGivenID;
+const getTransactionResult = require('../src/transaction').getTransactionResult;
 
 describe("performSaveTransaction", function() {
   it("should add new Transaction to the non-existing empid", function() {
