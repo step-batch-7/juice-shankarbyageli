@@ -34,7 +34,7 @@ const performQueryTransaction = function(currentRecords, transaction) {
   let date = transaction['--date'];
   let beverage = transaction['--beverage'];
   selectedEmpRecords = getDetailsOfGivenID(currentRecords, empId);
-  let selectedRecords = getFilteredRecords(selectedEmpRecords, date);
+  let selectedRecords = getFilteredRecords(selectedEmpRecords, date, beverage);
   let {beverageDetails, beverageCount} = getBeverageDetails(selectedRecords);
   return getQueryResultFormat(beverageDetails, beverageCount);
 };
