@@ -1,0 +1,4 @@
+(export NOW="2019-11-28T12:00:00.000Z";  node beverage.js --save --beverage Orange --empid 11111 --qty 1)
+Transaction Recorded:
+Employee ID, Beverage, Quantity, Date
+11111,Orange,1,2019-11-28T12:00:00.000Z

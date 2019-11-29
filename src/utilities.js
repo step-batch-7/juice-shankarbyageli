@@ -1,29 +1,29 @@
 const getQueryResultFormat = function(details, beverageCount) {
-  let heading = 'Employee ID, Beverage, Quantity, Date';
+  const heading = 'Employee ID, Beverage, Quantity, Date';
   details = details.join('\n');
-  let total = `total : ${beverageCount} juices`;
+  const total = `Total : ${beverageCount} Juices`;
   return [heading, details, total];
 };
 
 const getSavedPrintFormat = function(transaction) {
-  let recorded = 'Transaction Recorded:';
-  let heading = 'Employee ID, Beverage, Quantity, Date';
-  let detail = `${transaction.empid},${transaction.beverage},${transaction.quantity},${transaction.date}`;
+  const recorded = 'Transaction Recorded:';
+  const heading = 'Employee ID, Beverage, Quantity, Date';
+  const detail = `${transaction.empid},${transaction.beverage},${transaction.quantity},${transaction.date}`;
   return [recorded, heading, detail];
 };
 
 const getBeverageDetails = function(queryResult) {
-  let beverageDetails = queryResult.map(function(row) {
+  const beverageDetails = queryResult.map(function(row) {
     return [row.empid, row.beverage, row.quantity, row.date];
   });
-  let beverageCount = queryResult.reduce(function(total, row) {
+  const beverageCount = queryResult.reduce(function(total, row) {
     return total + (+row.quantity);
   }, 0);
   return {beverageDetails, beverageCount};
 };
 
 const getTransactionObj = function(transaction, date) {
-  let transactionObj = {
+  const transactionObj = {
     empid : transaction['--empid'],
     beverage : transaction['--beverage'],
     quantity : transaction['--qty'],
@@ -33,7 +33,7 @@ const getTransactionObj = function(transaction, date) {
 };
 
 const writeIntoTransactions = function(filePath, records, fileWriter) {
-  let transaction = JSON.stringify(records);
+  const transaction = JSON.stringify(records);
   fileWriter(filePath, transaction, 'utf8');
 }
 
@@ -46,7 +46,7 @@ const readTransactions = function(filepath, fileExists, readFile) {
   if(!fileExists(filepath)) {
     return JSON.parse('[]');
   }
-  let transactions = readFile(filepath,'utf8');
+  const transactions = readFile(filepath,'utf8');
   return JSON.parse(transactions);
 };
 

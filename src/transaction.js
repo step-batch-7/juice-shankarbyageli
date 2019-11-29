@@ -7,71 +7,65 @@ const getBeverageDetails = require('./utilities').getBeverageDetails;
 const getSavedPrintFormat = require('./utilities').getSavedPrintFormat;
 const getQueryResultFormat = require('./utilities').getQueryResultFormat;
 
-const filterByEmpId = function(records, empid) {
-  if(!empid) {
-    return records;
-  }
+const doesDateMatch = function(date, givenDate) {
+  givenDate = new Date(givenDate || date).toLocaleDateString();
+  date = new Date(date).toLocaleDateString();
+  return date == givenDate;
+};
+
+const doesEmpidMatch = function(empid, givenEmpid) {
+  givenEmpid = givenEmpid || empid;
+  return givenEmpid == empid;
+};
+
+const doesBeverageMatch = function(beverage, givenBeverage) {
+  givenBeverage = givenBeverage || beverage;
+  return givenBeverage == beverage;
+};
+
+const getFilteredRecords = function(records, filters) {
   return records.filter(function(record) {
-    return empid === record.empid;
+    const isSameEmpid = doesEmpidMatch(record.empid, filters.empid);
+    const isSameDate = doesDateMatch(record.date, filters.date);
+    const isSameBeverage = doesBeverageMatch(record.beverage, filters.beverage);
+    return isSameEmpid && isSameDate && isSameBeverage;
   });
 };
 
-const filterByDate = function(records, date) {
-  if(!date) {
-    return records;
-  }
-  return records.filter(function(record) {
-    let filterDate = new Date(date).toLocaleDateString();
-    return filterDate === new Date(record.date).toLocaleDateString();
-  });
-};
-
-const filterByBeverage = function(records, beverage) {
-  if(!beverage) {
-    return records;
-  }
-  return records.filter(function(record) {
-    return record.beverage === beverage
-  });
-};
-
-const performSaveTransaction = function(currentRecords, transactionDetails, writer, date) {
-  let transactionObj = getTransactionObj(transactionDetails, date);
+const performSaveTransaction = function(currentRecords, transactionDetails, writer, dataFile, date) {
+  const transactionObj = getTransactionObj(transactionDetails, date);
   currentRecords = insertTransaction(transactionObj, currentRecords);
-  writeIntoTransactions('./transactions.json', currentRecords, writer);
+  writeIntoTransactions(dataFile, currentRecords, writer);
   return getSavedPrintFormat(transactionObj);
 };
 
 const performQueryTransaction = function(currentRecords, transaction) {
-  let empId = transaction['--empid'];
-  let date = transaction['--date'];
-  let beverage = transaction['--beverage'];
-  let empidFilteredRecords = filterByEmpId(currentRecords, empId);
-  let dateFilteredRecords = filterByDate(empidFilteredRecords, date);
-  let beverageFilteredRecords = filterByBeverage(dateFilteredRecords, beverage);
-  let {beverageDetails, beverageCount} = getBeverageDetails(beverageFilteredRecords);
+  const empid = transaction['--empid'];
+  const date = transaction['--date'];
+  const beverage = transaction['--beverage'];
+  const filteredRecords = getFilteredRecords(currentRecords, {empid, date, beverage});
+  const {beverageDetails, beverageCount} = getBeverageDetails(filteredRecords);
   return getQueryResultFormat(beverageDetails, beverageCount);
 };
 
 const getTransactionResult = function(userInput, helperObj) {
-  let option = userInput[0];
-  let {isValid, transactionDetails} = parseInput(userInput);
+  const option = userInput[0];
+  const {isValid, transactionDetails} = parseInput(userInput);
   if(isValid) {
-    let records = readTransactions('./transactions.json', helperObj.isFileExists ,helperObj.readFile);
+    const records = readTransactions(helperObj.dataFile, helperObj.isFileExists ,helperObj.readFile);
     return option === '--save' ? performSaveTransaction(
       records, 
       transactionDetails,
-      helperObj.writer, 
+      helperObj.writer,
+      helperObj.dataFile,
       helperObj.date
     ) : performQueryTransaction(records, transactionDetails);
   }
-  let invalidMsg = ['Invalid Options !'];
+  const invalidMsg = ['Invalid Options !'];
   return invalidMsg;
 };
 
 exports.performSaveTransaction = performSaveTransaction;
 exports.performQueryTransaction = performQueryTransaction;
 exports.getTransactionResult = getTransactionResult;
-exports.filterByEmpId = filterByEmpId;
-exports.filterByDate = filterByDate;
-exports.filterByBeverage = filterByBeverage;
+exports.getFilteredRecords = getFilteredRecords;

@@ -1,0 +1,6 @@
+(export JUICE_TRANSACTIONS_STORE_PATH="./appTest/preset_2_orange_juices_transactionData.json" ; node beverage.js --query --empid 11111)
+Employee ID, Beverage, Quantity, Date
+11111,Orange,1,2019-11-28T12:00:00.000Z
+11111,Orange,1,2019-11-28T12:00:00.000Z
+11111,Orange,1,2019-11-28T12:00:00.000Z
+Total : 3 Juices

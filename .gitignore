@@ -1,3 +1,5 @@
 node_modules/
 .nyc_output/
 transactions.json
+runTests.sh
+appTest/

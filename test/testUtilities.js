@@ -7,15 +7,15 @@ const writeIntoTransactions = require('../src/utilities').writeIntoTransactions;
 
 describe('insertTransaction', function() {
   it('should add new Transaction to the non-existing empid', function() {
-    let date = new Date().toJSON();
-    let currentData = [];
-    let newTransaction = {
+    const date = new Date().toJSON();
+    const currentData = [];
+    const newTransaction = {
       empid : 12345,
       beverage : 'watermelon',
       quantity : 1,
       date : date
     };
-    let expected = [
+    const expected = [
       {
         empid : 12345,
         beverage : 'watermelon',
@@ -27,8 +27,8 @@ describe('insertTransaction', function() {
   });
 
   it('should add new transaction to the existing empid', function() {
-    let date = new Date().toJSON();
-    let currentData = [
+    const date = new Date().toJSON();
+    const currentData = [
       {
         empid : 12345,
         beverage : 'Orange',
@@ -36,13 +36,13 @@ describe('insertTransaction', function() {
         date : date
       }
     ];
-    let newTransaction = {      
+    const newTransaction = {      
       empid : 12345,
       beverage : 'watermelon',
       quantity : 1,
       date : date,
     };
-    let expected = [
+    const expected = [
       {
         empid : 12345,
         beverage : 'Orange',
@@ -62,9 +62,9 @@ describe('insertTransaction', function() {
 
 describe('getTransactionObj', function() {
   it('should get details of given transaction as object', function() {
-    let date = new Date();
-    let actual = getTransactionObj({ '--empid': '25340', '--beverage': 'mango', '--qty': '2' }, date);
-    let expected = {
+    const date = new Date();
+    const actual = getTransactionObj({ '--empid': '25340', '--beverage': 'mango', '--qty': '2' }, date);
+    const expected = {
       beverage : 'mango',
       quantity : '2',
       empid : '25340',
@@ -76,8 +76,8 @@ describe('getTransactionObj', function() {
 
 describe('getBeverageDetails', function() {
   it('should give beverage details and count of given emp details', function() {
-    let date = new Date();
-    let transactions = [
+    const date = new Date();
+    const transactions = [
       {
         beverage : 'Orange',
         quantity : 1,
@@ -91,8 +91,8 @@ describe('getBeverageDetails', function() {
         empid : 1234
       }
     ];
-    let actual = getBeverageDetails(transactions);
-    let expected = {
+    const actual = getBeverageDetails(transactions);
+    const expected = {
       beverageDetails : [[1234,'Orange',1,date],[1234,'watermelon',1,date]],
       beverageCount : 2
     }
@@ -110,8 +110,8 @@ describe('readTransactions', function() {
       assert.strictEqual(path, 'filepath');
       return '{"key" : "value"}';
     }
-    let actual = readTransactions('filepath', fileExists, readFile);
-    let expected = {key : 'value'};
+    const actual = readTransactions('filepath', fileExists, readFile);
+    const expected = {key : 'value'};
     assert.deepStrictEqual(actual, expected);
   });
 
@@ -124,8 +124,8 @@ describe('readTransactions', function() {
       assert.strictEqual(path, 'filepath');
       return '[]';
     }
-    let actual = readTransactions('filepath', fileExists, readFile);
-    let expected = [];
+    const actual = readTransactions('filepath', fileExists, readFile);
+    const expected = [];
     assert.deepStrictEqual(actual, expected);
   });
 });
@@ -136,6 +136,6 @@ describe('writeIntoTransactions', function() {
       assert.equal(filePath, 'somepath');
       assert.equal(content, '{"key":"value"}');
     }
-    let actual = writeIntoTransactions('somepath', {key : 'value'}, fileWriter);
+    const actual = writeIntoTransactions('somepath', {key : 'value'}, fileWriter);
   });
 });
