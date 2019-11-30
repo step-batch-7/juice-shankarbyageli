@@ -8,7 +8,7 @@ const getQueryResultFormat = function(details, beverageCount) {
 const getSavedPrintFormat = function(transaction) {
   const recorded = 'Transaction Recorded:';
   const heading = 'Employee ID, Beverage, Quantity, Date';
-  const detail = `${transaction.empid},${transaction.beverage},${transaction.quantity},${transaction.date}`;
+  const detail = `${transaction.empid},${transaction.beverage},${transaction.quantity},${transaction.date.toJSON()}`;
   return [recorded, heading, detail];
 };
 
@@ -27,7 +27,7 @@ const getTransactionObj = function(transaction, date) {
     empid : transaction['--empid'],
     beverage : transaction['--beverage'],
     quantity : transaction['--qty'],
-    date : date.toJSON()
+    date : date
   }
   return transactionObj;
 };
