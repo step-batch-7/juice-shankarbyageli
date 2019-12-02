@@ -1,8 +1,9 @@
 const assert = require('chai').assert;
-const performSaveTransaction = require('../src/transaction.js').performSaveTransaction;
-const performQueryTransaction = require('../src/transaction').performQueryTransaction;
-const getTransactionResult = require('../src/transaction').getTransactionResult;
-const getFilteredRecords = require('../src/transaction').getFilteredRecords;
+const { performSaveTransaction,
+  performQueryTransaction,
+  getTransactionResult,
+  getFilteredRecords 
+} = require('../src/transaction');
 
 describe('performSaveTransaction', function() {
   it('should add new Transaction to the non-existing empid', function() {
@@ -44,7 +45,7 @@ describe('performQueryTranasaction', function() {
     const expected = [
       'Employee ID, Beverage, Quantity, Date',
       `12345,Orange,1,${date}`,
-      'Total : 1 Juices'
+      'Total : 1 Juice'
     ];
     assert.deepStrictEqual(actual, expected);
   });

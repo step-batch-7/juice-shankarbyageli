@@ -1,9 +1,10 @@
 const assert = require('chai').assert;
-const insertTransaction = require('../src/utilities').insertTransaction;
-const getTransactionObj = require('../src/utilities').getTransactionObj;
-const getBeverageDetails = require('../src/utilities').getBeverageDetails;
-const readTransactions = require('../src/utilities').readTransactions;
-const writeIntoTransactions = require('../src/utilities').writeIntoTransactions;
+const { insertTransaction,
+  getTransactionObj,
+  getBeverageDetails,
+  readTransactions,
+  writeIntoTransactions
+} = require('../src/transactionLib');
 
 describe('insertTransaction', function() {
   it('should add new Transaction to the non-existing empid', function() {

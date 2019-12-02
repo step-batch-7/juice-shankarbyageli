@@ -1,11 +1,15 @@
-const readTransactions = require('./utilities').readTransactions;
-const writeIntoTransactions = require('./utilities').writeIntoTransactions;
+const { readTransactions, 
+  writeIntoTransactions, 
+  getTransactionObj, 
+  insertTransaction,
+  getBeverageDetails, 
+} = require('./transactionLib');
+
+const { getSavedPrintFormat,
+  getQueryResultFormat 
+} = require('./utilities');
+
 const parseInput = require('./inputValidation').parseInput;
-const getTransactionObj = require('./utilities').getTransactionObj;
-const insertTransaction = require('./utilities').insertTransaction;
-const getBeverageDetails = require('./utilities').getBeverageDetails;
-const getSavedPrintFormat = require('./utilities').getSavedPrintFormat;
-const getQueryResultFormat = require('./utilities').getQueryResultFormat;
 
 const doesDateMatch = function(date, givenDate) {
   givenDate = new Date(givenDate || date).toLocaleDateString();
